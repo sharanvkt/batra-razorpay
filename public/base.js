@@ -1,10 +1,10 @@
 /**
- * base.js — Razorpay checkout for The Batra Numerology
+ * base.js - Razorpay checkout for The Batra Numerology
  *
  * Load once globally. Activates on any page that has a button
  * with the [data-razorpay-product] attribute. Zero per-page config.
  *
- * ─── BUTTON MARKUP ────────────────────────────────────────────────
+ * BUTTON MARKUP:
  *
  *   <button
  *     data-razorpay-product
@@ -12,37 +12,41 @@
  *     data-redirect-url="https://thebatraanumerology.org/thank-you/"
  *     class="rzp-buy-btn"
  *   >
- *     Buy Basic Report — ₹499
+ *     Buy Basic Report - Rs.499
  *   </button>
  *
  * Required attributes:
- *   data-razorpay-product  — presence flag, no value needed
- *   data-product-id        — must match a key in lib/catalog.js
- *   data-redirect-url      — where to send the user after payment
- *
- * ─────────────────────────────────────────────────────────────────
+ *   data-razorpay-product  -- presence flag, no value needed
+ *   data-product-id        -- must match a key in lib/catalog.js
+ *   data-redirect-url      -- where to send the user after payment
  */
 
 (function () {
   "use strict";
 
-  // ── CONFIGURATION ─────────────────────────────────────────────
-  // Set this to your Vercel deployment URL (no trailing slash).
-  // After you deploy to Vercel, copy the URL from the dashboard.
+  // CONFIGURATION
+  // Your Vercel deployment URL - no trailing slash
   var VERCEL_BASE_URL = "https://batra-razorpay.vercel.app";
 
   var RAZORPAY_CHECKOUT_URL = "https://checkout.razorpay.com/v1/checkout.js";
   var PENDING_ORDER_KEY = "rzp_pending_order";
 
-  // ── BOOT ──────────────────────────────────────────────────────
-  document.addEventListener("DOMContentLoaded", function () {
+  // BOOT
+  // Handles both cases:
+  //   1. Script loads early (before DOM ready) -> wait for DOMContentLoaded
+  //   2. Script loads late via WordPress footer -> DOM already ready, run now
+  function boot() {
     initButtons();
     recoverCrashedPayment();
-  });
+  }
 
-  // ─────────────────────────────────────────────────────────────
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", boot);
+  } else {
+    boot();
+  }
+
   // BUTTON INITIALISATION
-  // ─────────────────────────────────────────────────────────────
   function initButtons() {
     var buttons = document.querySelectorAll("[data-razorpay-product]");
     if (!buttons.length) return;
@@ -55,9 +59,7 @@
     });
   }
 
-  // ─────────────────────────────────────────────────────────────
-  // CLICK HANDLER — orchestrates the full payment flow
-  // ─────────────────────────────────────────────────────────────
+  // CLICK HANDLER
   function handleBuyClick(btn) {
     var productId = btn.getAttribute("data-product-id");
     var redirectUrl = btn.getAttribute("data-redirect-url");
@@ -69,15 +71,12 @@
 
     setLoading(btn, true);
 
-    // Step 1: Ask the server to create a Razorpay order.
-    // Amount comes from the server catalog — never from this script.
     fetchJson(VERCEL_BASE_URL + "/api/create-order", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ product_id: productId }),
     })
       .then(function (orderData) {
-        // Step 2: Load checkout.js lazily, then open the popup
         return loadRazorpayScript().then(function () {
           openCheckout(btn, orderData, redirectUrl);
         });
@@ -89,11 +88,8 @@
       });
   }
 
-  // ─────────────────────────────────────────────────────────────
-  // OPEN RAZORPAY CHECKOUT POPUP
-  // ─────────────────────────────────────────────────────────────
+  // OPEN RAZORPAY POPUP
   function openCheckout(btn, orderData, redirectUrl) {
-    // Store pending order for crash recovery (cleared on success/dismiss)
     sessionStorage.setItem(
       PENDING_ORDER_KEY,
       JSON.stringify({
@@ -104,22 +100,19 @@
     );
 
     var rzp = new window.Razorpay({
-      key: orderData.key_id, // public key only — safe
-      amount: orderData.amount, // paise, display only
+      key: orderData.key_id,
+      amount: orderData.amount,
       currency: orderData.currency,
       name: "The Batra Numerology",
       description: orderData.description,
-      image: "https://thebatraanumerology.org/wp-content/uploads/logo.png",
       order_id: orderData.order_id,
 
       handler: function (paymentResponse) {
-        // Razorpay calls this after user completes payment.
-        // We still verify server-side — this callback alone is NOT proof.
         verifyAndRedirect(btn, paymentResponse, redirectUrl);
       },
 
       prefill: {
-        name: "", // optionally pre-fill from a WordPress login
+        name: "",
         email: "",
         contact: "",
       },
@@ -149,9 +142,7 @@
     rzp.open();
   }
 
-  // ─────────────────────────────────────────────────────────────
   // SERVER-SIDE VERIFICATION + REDIRECT
-  // ─────────────────────────────────────────────────────────────
   function verifyAndRedirect(btn, paymentResponse, redirectUrl) {
     fetchJson(VERCEL_BASE_URL + "/api/verify-payment", {
       method: "POST",
@@ -172,17 +163,12 @@
         sessionStorage.removeItem(PENDING_ORDER_KEY);
         showError(
           btn,
-          "Payment received but verification failed. " +
-            "Please contact us with your payment ID.",
+          "Payment received but verification failed. Please contact us with your payment ID.",
         );
       });
   }
 
-  // ─────────────────────────────────────────────────────────────
   // CRASH RECOVERY
-  // Runs on every page load. If the user paid but the browser
-  // crashed before redirect, we detect it here and recover.
-  // ─────────────────────────────────────────────────────────────
   function recoverCrashedPayment() {
     var raw = sessionStorage.getItem(PENDING_ORDER_KEY);
     if (!raw) return;
@@ -195,7 +181,6 @@
       return;
     }
 
-    // Ignore entries older than 1 hour
     if (!pending.order_id || Date.now() - pending.ts > 3600000) {
       sessionStorage.removeItem(PENDING_ORDER_KEY);
       return;
@@ -219,15 +204,12 @@
         }
       })
       .catch(function () {
-        /* Network error — try again next page load */
+        /* Network error - try again next page load */
       });
   }
 
-  // ─────────────────────────────────────────────────────────────
-  // UTILITY FUNCTIONS
-  // ─────────────────────────────────────────────────────────────
+  // UTILITIES
 
-  /** Loads Razorpay checkout.js only when needed */
   function loadRazorpayScript() {
     return new Promise(function (resolve, reject) {
       if (window.Razorpay) {
@@ -244,7 +226,6 @@
     });
   }
 
-  /** fetch() wrapper that rejects on non-2xx and parses JSON */
   function fetchJson(url, options) {
     return fetch(url, options).then(function (res) {
       if (!res.ok) {
@@ -256,18 +237,16 @@
     });
   }
 
-  /** Disables button and shows a loading label */
   function setLoading(btn, isLoading) {
     btn.disabled = isLoading;
     if (isLoading) {
       btn._originalText = btn.textContent;
-      btn.textContent = "Please wait\u2026";
+      btn.textContent = "Please wait...";
     } else {
       btn.textContent = btn._originalText || btn.textContent;
     }
   }
 
-  /** Inserts an error message below the button, auto-clears after 8s */
   function showError(btn, message) {
     var existing = btn.parentNode.querySelector(".rzp-error-msg");
     if (existing) existing.remove();
