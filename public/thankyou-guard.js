@@ -24,7 +24,7 @@
 (function () {
   "use strict";
 
-  const VERCEL_BASE_URL = "https://your-project.vercel.app"; // ← UPDATE THIS
+  const VERCEL_BASE_URL = "https://batra-razorpay.vercel.app"; // ← UPDATE THIS
   const REDIRECT_ON_FAIL = "https://thebatraanumerology.org/"; // ← homepage
   const GRACE_PERIOD_MS = 5 * 60 * 1000; // 5 minutes — for slow redirects
 
@@ -54,10 +54,15 @@
     try {
       const raw = sessionStorage.getItem("rzp_pending_order");
       if (raw) pending = JSON.parse(raw);
-    } catch { /* ignore */ }
+    } catch {
+      /* ignore */
+    }
 
     // If we have a recent breadcrumb for this order — trust it (fast path)
-    if (pending?.order_id === orderId && Date.now() - pending.created_at < GRACE_PERIOD_MS) {
+    if (
+      pending?.order_id === orderId &&
+      Date.now() - pending.created_at < GRACE_PERIOD_MS
+    ) {
       sessionStorage.removeItem("rzp_pending_order");
       showPage();
       return;
@@ -68,7 +73,7 @@
     // redirected by recoverPendingOrder() in base.js.
     try {
       const response = await fetch(
-        `${VERCEL_BASE_URL}/api/check-order?order_id=${encodeURIComponent(orderId)}`
+        `${VERCEL_BASE_URL}/api/check-order?order_id=${encodeURIComponent(orderId)}`,
       );
 
       if (!response.ok) throw new Error("Server error");
@@ -84,7 +89,10 @@
       // The webhook has already recorded the payment — this is just a guard.
       // A false-positive (showing page to non-payer) is better than a
       // false-negative (blocking a real customer who just paid).
-      console.warn("[thankyou-guard] Verification check failed, showing page:", err);
+      console.warn(
+        "[thankyou-guard] Verification check failed, showing page:",
+        err,
+      );
       showPage();
     }
   }

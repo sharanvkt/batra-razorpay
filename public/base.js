@@ -29,10 +29,10 @@
   // ── CONFIGURATION ─────────────────────────────────────────────
   // Set this to your Vercel deployment URL (no trailing slash).
   // After you deploy to Vercel, copy the URL from the dashboard.
-  var VERCEL_BASE_URL = "https://YOUR-PROJECT-NAME.vercel.app";
+  var VERCEL_BASE_URL = "https://batra-razorpay.vercel.app";
 
   var RAZORPAY_CHECKOUT_URL = "https://checkout.razorpay.com/v1/checkout.js";
-  var PENDING_ORDER_KEY     = "rzp_pending_order";
+  var PENDING_ORDER_KEY = "rzp_pending_order";
 
   // ── BOOT ──────────────────────────────────────────────────────
   document.addEventListener("DOMContentLoaded", function () {
@@ -59,7 +59,7 @@
   // CLICK HANDLER — orchestrates the full payment flow
   // ─────────────────────────────────────────────────────────────
   function handleBuyClick(btn) {
-    var productId   = btn.getAttribute("data-product-id");
+    var productId = btn.getAttribute("data-product-id");
     var redirectUrl = btn.getAttribute("data-redirect-url");
 
     if (!productId) {
@@ -72,9 +72,9 @@
     // Step 1: Ask the server to create a Razorpay order.
     // Amount comes from the server catalog — never from this script.
     fetchJson(VERCEL_BASE_URL + "/api/create-order", {
-      method:  "POST",
+      method: "POST",
       headers: { "Content-Type": "application/json" },
-      body:    JSON.stringify({ product_id: productId }),
+      body: JSON.stringify({ product_id: productId }),
     })
       .then(function (orderData) {
         // Step 2: Load checkout.js lazily, then open the popup
@@ -97,20 +97,20 @@
     sessionStorage.setItem(
       PENDING_ORDER_KEY,
       JSON.stringify({
-        order_id:     orderData.order_id,
+        order_id: orderData.order_id,
         redirect_url: redirectUrl,
-        ts:           Date.now(),
-      })
+        ts: Date.now(),
+      }),
     );
 
     var rzp = new window.Razorpay({
-      key:         orderData.key_id,       // public key only — safe
-      amount:      orderData.amount,       // paise, display only
-      currency:    orderData.currency,
-      name:        "The Batra Numerology",
+      key: orderData.key_id, // public key only — safe
+      amount: orderData.amount, // paise, display only
+      currency: orderData.currency,
+      name: "The Batra Numerology",
       description: orderData.description,
-      image:       "https://thebatraanumerology.org/wp-content/uploads/logo.png",
-      order_id:    orderData.order_id,
+      image: "https://thebatraanumerology.org/wp-content/uploads/logo.png",
+      order_id: orderData.order_id,
 
       handler: function (paymentResponse) {
         // Razorpay calls this after user completes payment.
@@ -119,19 +119,19 @@
       },
 
       prefill: {
-        name:    "",    // optionally pre-fill from a WordPress login
-        email:   "",
+        name: "", // optionally pre-fill from a WordPress login
+        email: "",
         contact: "",
       },
 
-      theme:  { color: "#B8860B" },
+      theme: { color: "#B8860B" },
 
       modal: {
         ondismiss: function () {
           sessionStorage.removeItem(PENDING_ORDER_KEY);
           setLoading(btn, false);
         },
-        escape:    true,
+        escape: true,
         animation: true,
       },
     });
@@ -141,7 +141,8 @@
       setLoading(btn, false);
       showError(
         btn,
-        "Payment failed: " + (response.error.description || "Please try again.")
+        "Payment failed: " +
+          (response.error.description || "Please try again."),
       );
     });
 
@@ -153,12 +154,12 @@
   // ─────────────────────────────────────────────────────────────
   function verifyAndRedirect(btn, paymentResponse, redirectUrl) {
     fetchJson(VERCEL_BASE_URL + "/api/verify-payment", {
-      method:  "POST",
+      method: "POST",
       headers: { "Content-Type": "application/json" },
-      body:    JSON.stringify({
+      body: JSON.stringify({
         razorpay_payment_id: paymentResponse.razorpay_payment_id,
-        razorpay_order_id:   paymentResponse.razorpay_order_id,
-        razorpay_signature:  paymentResponse.razorpay_signature,
+        razorpay_order_id: paymentResponse.razorpay_order_id,
+        razorpay_signature: paymentResponse.razorpay_signature,
       }),
     })
       .then(function (data) {
@@ -172,7 +173,7 @@
         showError(
           btn,
           "Payment received but verification failed. " +
-            "Please contact us with your payment ID."
+            "Please contact us with your payment ID.",
         );
       });
   }
@@ -187,7 +188,9 @@
     if (!raw) return;
 
     var pending;
-    try { pending = JSON.parse(raw); } catch (e) {
+    try {
+      pending = JSON.parse(raw);
+    } catch (e) {
       sessionStorage.removeItem(PENDING_ORDER_KEY);
       return;
     }
@@ -201,14 +204,16 @@
     fetchJson(
       VERCEL_BASE_URL +
         "/api/check-order?order_id=" +
-        encodeURIComponent(pending.order_id)
+        encodeURIComponent(pending.order_id),
     )
       .then(function (data) {
         if (data.status === "paid") {
           sessionStorage.removeItem(PENDING_ORDER_KEY);
           window.location.href =
             (pending.redirect_url || "/thank-you/") +
-            "?ref=" + pending.order_id + "&recovered=1";
+            "?ref=" +
+            pending.order_id +
+            "&recovered=1";
         } else {
           sessionStorage.removeItem(PENDING_ORDER_KEY);
         }
@@ -225,11 +230,16 @@
   /** Loads Razorpay checkout.js only when needed */
   function loadRazorpayScript() {
     return new Promise(function (resolve, reject) {
-      if (window.Razorpay) { resolve(); return; }
+      if (window.Razorpay) {
+        resolve();
+        return;
+      }
       var s = document.createElement("script");
-      s.src     = RAZORPAY_CHECKOUT_URL;
-      s.onload  = resolve;
-      s.onerror = function () { reject(new Error("Razorpay script failed to load")); };
+      s.src = RAZORPAY_CHECKOUT_URL;
+      s.onload = resolve;
+      s.onerror = function () {
+        reject(new Error("Razorpay script failed to load"));
+      };
       document.head.appendChild(s);
     });
   }
@@ -251,7 +261,7 @@
     btn.disabled = isLoading;
     if (isLoading) {
       btn._originalText = btn.textContent;
-      btn.textContent   = "Please wait\u2026";
+      btn.textContent = "Please wait\u2026";
     } else {
       btn.textContent = btn._originalText || btn.textContent;
     }
@@ -263,13 +273,14 @@
     if (existing) existing.remove();
 
     var p = document.createElement("p");
-    p.className  = "rzp-error-msg";
+    p.className = "rzp-error-msg";
     p.style.cssText =
       "color:#c0392b;font-size:14px;margin:8px 0 0;font-weight:500;";
     p.textContent = message;
     btn.parentNode.insertBefore(p, btn.nextSibling);
 
-    setTimeout(function () { if (p.parentNode) p.remove(); }, 8000);
+    setTimeout(function () {
+      if (p.parentNode) p.remove();
+    }, 8000);
   }
-
 })();
