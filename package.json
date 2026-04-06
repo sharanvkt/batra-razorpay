@@ -1,0 +1,15 @@
+{
+  "name": "batra-numerology-payments",
+  "version": "1.0.0",
+  "description": "Razorpay payment backend for thebatraanumerology.org",
+  "private": true,
+  "engines": {
+    "node": ">=18.x"
+  },
+  "dependencies": {
+    "razorpay": "^2.9.6"
+  },
+  "scripts": {
+    "dev": "vercel dev"
+  }
+}
