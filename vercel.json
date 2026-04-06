@@ -4,5 +4,21 @@
     "api/*.js": {
       "maxDuration": 10
     }
-  }
+  },
+  "headers": [
+    {
+      "source": "/base.js",
+      "headers": [
+        { "key": "Access-Control-Allow-Origin", "value": "*" },
+        { "key": "Content-Type", "value": "application/javascript" }
+      ]
+    },
+    {
+      "source": "/thankyou-guard.js",
+      "headers": [
+        { "key": "Access-Control-Allow-Origin", "value": "*" },
+        { "key": "Content-Type", "value": "application/javascript" }
+      ]
+    }
+  ]
 }
