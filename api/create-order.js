@@ -1,76 +1,85 @@
 /**
  * POST /api/create-order
  *
- * Receives a product_id from the browser.
- * Looks up the canonical price server-side.
- * Creates a Razorpay order and returns order details to the browser.
- *
- * ─── SECURITY NOTES ──────────────────────────────────────────────
- * • Amount is NEVER taken from the request body. Catalog is the
- *   single source of truth.
- * • KEY_SECRET is used by the Razorpay SDK internally — it is
- *   never returned to the browser.
- * • Only key_id (the public key) is returned.
- * ─────────────────────────────────────────────────────────────────
+ * Accepts product_id + customer details.
+ * Looks up price AND pabbly_webhook from server catalog.
+ * Stores everything in Razorpay order notes so the webhook
+ * handler can read them without any extra DB lookup.
  *
  * Request body:
- *   { "product_id": "numerology-basic" }
- *
- * Success response 200:
  *   {
- *     "order_id":     "order_xxx",
- *     "key_id":       "rzp_test_xxx",
- *     "amount":       49900,
- *     "currency":     "INR",
- *     "product_name": "Numerology Basic Report",
- *     "description":  "Personal numerology reading — core numbers"
+ *     "product_id": "numerology-basic",
+ *     "customer": {
+ *       "first_name": "Rahul",
+ *       "last_name":  "Sharma",
+ *       "email":      "rahul@example.com",
+ *       "phone":      "9876543210",
+ *       "dob":        "15/08/1990",
+ *       "gender":     "Male"
+ *     }
  *   }
  *
- * Error responses:
- *   400 — missing or unknown product_id
- *   405 — wrong HTTP method
- *   502 — Razorpay API error
+ * SECURITY: Amount and pabbly_webhook always come from server
+ * catalog — never from the browser request.
  */
 
-const { setCors }    = require("../lib/cors");
+const { setCors } = require("../lib/cors");
 const { getProduct } = require("../lib/catalog");
-const razorpay       = require("../lib/razorpay");
+const razorpay = require("../lib/razorpay");
 
 module.exports = async function handler(req, res) {
-  // ── CORS ──────────────────────────────────────────────────────
-  if (setCors(req, res)) return;          // handles OPTIONS preflight
+  if (setCors(req, res)) return;
 
-  // ── METHOD GUARD ──────────────────────────────────────────────
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  // ── INPUT VALIDATION ──────────────────────────────────────────
-  const { product_id } = req.body || {};
+  const { product_id, customer = {} } = req.body || {};
 
   if (!product_id) {
     return res.status(400).json({ error: "product_id is required" });
   }
 
-  // ── CATALOG LOOKUP ────────────────────────────────────────────
-  // Amount comes from the server catalog — never from req.body.
+  // Price + pabbly_webhook from server catalog — never from browser
   const product = getProduct(product_id);
-
   if (!product) {
     return res.status(400).json({ error: "Invalid product" });
   }
 
-  // ── CREATE RAZORPAY ORDER ─────────────────────────────────────
+  // Sanitise customer fields
+  const sanitise = (val) =>
+    typeof val === "string" ? val.replace(/<[^>]*>/g, "").slice(0, 200) : "";
+
+  const c = {
+    first_name: sanitise(customer.first_name),
+    last_name: sanitise(customer.last_name),
+    email: sanitise(customer.email),
+    phone: sanitise(customer.phone).replace(/\D/g, "").slice(0, 10),
+    dob: sanitise(customer.dob),
+    gender: sanitise(customer.gender),
+  };
+
+  const fullName = [c.first_name, c.last_name].filter(Boolean).join(" ");
+
   let order;
   try {
     order = await razorpay.orders.create({
-      amount:   product.amount,           // paise, from server catalog
+      amount: product.amount,
       currency: product.currency,
-      receipt:  `rcpt_${Date.now()}`,     // internal ref, max 40 chars
+      receipt: `rcpt_${Date.now()}`,
       notes: {
+        // Product info
         product_id,
-        product_name:  product.name,
+        product_name: product.name,
         thankyou_path: product.thankyou_path,
+        // Pabbly webhook from catalog — webhook handler reads this
+        pabbly_webhook: product.pabbly_webhook,
+        // Customer info
+        customer_name: fullName,
+        customer_email: c.email,
+        customer_phone: c.phone,
+        customer_dob: c.dob,
+        customer_gender: c.gender,
       },
     });
   } catch (err) {
@@ -80,14 +89,18 @@ module.exports = async function handler(req, res) {
       .json({ error: "Could not create payment order. Please try again." });
   }
 
-  // ── RESPOND ───────────────────────────────────────────────────
-  // KEY_SECRET is intentionally absent from this response.
   return res.status(200).json({
-    order_id:     order.id,
-    key_id:       process.env.RAZORPAY_KEY_ID,   // public key — safe
-    amount:       order.amount,
-    currency:     order.currency,
+    order_id: order.id,
+    key_id: process.env.RAZORPAY_KEY_ID,
+    amount: order.amount,
+    currency: order.currency,
     product_name: product.name,
-    description:  product.description,
+    description: product.description,
+    // Return customer data for Razorpay popup prefill
+    customer: {
+      name: fullName,
+      email: c.email,
+      contact: c.phone ? "+91" + c.phone : "",
+    },
   });
 };

@@ -1,42 +1,50 @@
 /**
  * base.js - Razorpay checkout for The Batra Numerology
+ * 
+ * PLUG AND PLAY — load this script once globally on any WordPress page.
+ * Zero per-page JS configuration needed.
  *
- * Load once globally. Activates on any page that has a button
- * with the [data-razorpay-product] attribute. Zero per-page config.
+ * HOW TO USE ON ANY PAGE:
  *
- * BUTTON MARKUP:
+ *   Step 1 — Add a trigger button anywhere:
+ *     <button class="form-cta" data-product-id="numerology-basic">
+ *       Buy Now
+ *     </button>
  *
- *   <button
- *     data-razorpay-product
- *     data-product-id="numerology-basic"
- *     data-redirect-url="https://thebatraanumerology.org/thank-you/"
- *     class="rzp-buy-btn"
- *   >
- *     Buy Basic Report - Rs.499
- *   </button>
+ *   Step 2 — Make sure your modal HTML is on the page (copy from template).
  *
- * Required attributes:
- *   data-razorpay-product  -- presence flag, no value needed
- *   data-product-id        -- must match a key in lib/catalog.js
- *   data-redirect-url      -- where to send the user after payment
+ *   That's it. data-product-id is the only thing that changes per funnel.
+ *
+ * FLOW:
+ *   form-cta click
+ *     -> stores product_id
+ *     -> opens modal form
+ *   Form submit
+ *     -> POST /api/create-order { product_id, customer }
+ *     -> server looks up price + pabbly_webhook from catalog
+ *     -> opens Razorpay popup (prefilled with customer data)
+ *   Payment success
+ *     -> POST /api/verify-payment
+ *     -> redirect to thank-you page with all data in URL params
+ *   Webhook (server-to-server, async)
+ *     -> fires product-specific Pabbly webhook
  */
 
 (function () {
   "use strict";
 
-  // CONFIGURATION
-  // Your Vercel deployment URL - no trailing slash
-  var VERCEL_BASE_URL = "https://batra-razorpay.vercel.app";
-
+  var VERCEL_BASE_URL       = "https://batra-razorpay.vercel.app";
   var RAZORPAY_CHECKOUT_URL = "https://checkout.razorpay.com/v1/checkout.js";
-  var PENDING_ORDER_KEY = "rzp_pending_order";
+  var PENDING_ORDER_KEY     = "rzp_pending_order";
 
-  // BOOT
-  // Handles both cases:
-  //   1. Script loads early (before DOM ready) -> wait for DOMContentLoaded
-  //   2. Script loads late via WordPress footer -> DOM already ready, run now
+  // Active product_id — set when a form-cta button is clicked
+  var activeProductId   = null;
+  var activeRedirectUrl = null;
+
+  // Boot — safe for both early and late (footer) script loading
   function boot() {
-    initButtons();
+    hookFormCtaButtons();
+    hookModalForm();
     recoverCrashedPayment();
   }
 
@@ -46,182 +54,243 @@
     boot();
   }
 
-  // BUTTON INITIALISATION
-  function initButtons() {
-    var buttons = document.querySelectorAll("[data-razorpay-product]");
-    if (!buttons.length) return;
+  // -------------------------------------------------------
+  // STEP 1: form-cta buttons open the modal
+  // Reads data-product-id from the clicked button.
+  // data-redirect-url is optional — falls back to /thank-you/
+  // -------------------------------------------------------
+  function hookFormCtaButtons() {
+    // Use event delegation — works even if buttons are added dynamically
+    document.addEventListener("click", function (e) {
+      var btn = e.target.closest(".form-cta");
+      if (!btn) return;
 
-    buttons.forEach(function (btn) {
-      btn.addEventListener("click", function (e) {
-        e.preventDefault();
-        handleBuyClick(btn);
-      });
+      e.preventDefault();
+
+      activeProductId   = btn.getAttribute("data-product-id") || "";
+      activeRedirectUrl = btn.getAttribute("data-redirect-url") || "/thank-you/";
+
+      if (!activeProductId) {
+        console.error("[rzp] .form-cta button is missing data-product-id");
+        return;
+      }
+
+      // Open the modal (your existing modal logic)
+      var modal = document.getElementById("leadFormModal");
+      if (modal) {
+        modal.classList.add("active");
+        document.body.style.overflow = "hidden";
+        // Trigger your existing resetForm if available
+        if (typeof resetForm === "function") resetForm();
+      } else {
+        console.error("[rzp] #leadFormModal not found on this page");
+      }
     });
   }
 
-  // CLICK HANDLER
-  function handleBuyClick(btn) {
-    var productId = btn.getAttribute("data-product-id");
-    var redirectUrl = btn.getAttribute("data-redirect-url");
+  // -------------------------------------------------------
+  // STEP 2: Modal form submit -> create order -> open popup
+  // Hooks into the existing form without breaking its
+  // validation logic (step navigation, error messages etc).
+  // -------------------------------------------------------
+  function hookModalForm() {
+    var form = document.getElementById("leadForm");
+    if (!form) return;
 
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      e.stopImmediatePropagation(); // prevent other submit handlers firing twice
+
+      // Run validation from the existing script by checking for errors
+      // The existing script shows .error-message.show on invalid fields
+      var hasErrors = form.querySelector(".error-message.show");
+      if (hasErrors) return;
+
+      // Collect customer data from the form
+      var customer = {
+        first_name: getVal("firstName"),
+        last_name:  getVal("lastName"),
+        email:      getVal("email"),
+        phone:      getVal("phone"),
+        dob:        getVal("dob"),
+        gender:     getVal("gender"),
+      };
+
+      // Validate required customer fields exist
+      if (!customer.first_name || !customer.email || !customer.phone) {
+        console.error("[rzp] Missing required customer fields");
+        return;
+      }
+
+      // Show loading on submit button
+      var submitBtn = document.getElementById("submitBtn");
+      if (submitBtn) submitBtn.classList.add("loading");
+
+      // Close modal
+      var modal = document.getElementById("leadFormModal");
+      if (modal) {
+        modal.classList.remove("active");
+        document.body.style.overflow = "";
+      }
+
+      // Start payment with the product_id from the clicked form-cta button
+      startPayment(activeProductId, customer, activeRedirectUrl, submitBtn);
+    });
+  }
+
+  // -------------------------------------------------------
+  // CORE: POST to create-order then open Razorpay popup
+  // -------------------------------------------------------
+  function startPayment(productId, customer, redirectUrl, triggerEl) {
     if (!productId) {
-      showError(btn, "Configuration error: data-product-id is missing.");
+      console.error("[rzp] No product_id set. Did you click a .form-cta button?");
+      if (triggerEl) triggerEl.classList.remove("loading");
       return;
     }
 
-    setLoading(btn, true);
-
     fetchJson(VERCEL_BASE_URL + "/api/create-order", {
-      method: "POST",
+      method:  "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ product_id: productId }),
+      body:    JSON.stringify({ product_id: productId, customer: customer }),
     })
       .then(function (orderData) {
         return loadRazorpayScript().then(function () {
-          openCheckout(btn, orderData, redirectUrl);
+          openCheckout(orderData, redirectUrl, triggerEl);
         });
       })
       .catch(function (err) {
         console.error("[rzp] create-order failed:", err);
-        setLoading(btn, false);
-        showError(btn, "Could not start payment. Please try again.");
+        if (triggerEl) triggerEl.classList.remove("loading");
+        alert("Could not start payment. Please try again.");
       });
   }
 
-  // OPEN RAZORPAY POPUP
-  function openCheckout(btn, orderData, redirectUrl) {
+  // -------------------------------------------------------
+  // RAZORPAY POPUP
+  // -------------------------------------------------------
+  function openCheckout(orderData, redirectUrl, triggerEl) {
     sessionStorage.setItem(
       PENDING_ORDER_KEY,
       JSON.stringify({
-        order_id: orderData.order_id,
+        order_id:     orderData.order_id,
         redirect_url: redirectUrl,
-        ts: Date.now(),
-      }),
+        ts:           Date.now(),
+      })
     );
 
     var rzp = new window.Razorpay({
-      key: orderData.key_id,
-      amount: orderData.amount,
-      currency: orderData.currency,
-      name: "The Batra Numerology",
+      key:         orderData.key_id,
+      amount:      orderData.amount,
+      currency:    orderData.currency,
+      name:        "The Batra Numerology",
       description: orderData.description,
-      order_id: orderData.order_id,
+      order_id:    orderData.order_id,
 
-      handler: function (paymentResponse) {
-        verifyAndRedirect(btn, paymentResponse, redirectUrl);
-      },
-
+      // Prefilled from form data — improves conversion
       prefill: {
-        name: "",
-        email: "",
-        contact: "",
+        name:    orderData.customer ? orderData.customer.name    : "",
+        email:   orderData.customer ? orderData.customer.email   : "",
+        contact: orderData.customer ? orderData.customer.contact : "",
       },
 
       theme: { color: "#B8860B" },
 
+      handler: function (paymentResponse) {
+        verifyAndRedirect(paymentResponse, redirectUrl, triggerEl);
+      },
+
       modal: {
         ondismiss: function () {
           sessionStorage.removeItem(PENDING_ORDER_KEY);
-          setLoading(btn, false);
+          if (triggerEl) triggerEl.classList.remove("loading");
         },
-        escape: true,
+        escape:    true,
         animation: true,
       },
     });
 
     rzp.on("payment.failed", function (response) {
       sessionStorage.removeItem(PENDING_ORDER_KEY);
-      setLoading(btn, false);
-      showError(
-        btn,
-        "Payment failed: " +
-          (response.error.description || "Please try again."),
-      );
+      if (triggerEl) triggerEl.classList.remove("loading");
+      alert("Payment failed: " + (response.error.description || "Please try again."));
     });
 
     rzp.open();
   }
 
-  // SERVER-SIDE VERIFICATION + REDIRECT
-  function verifyAndRedirect(btn, paymentResponse, redirectUrl) {
+  // -------------------------------------------------------
+  // VERIFY + REDIRECT TO TY PAGE WITH ALL PARAMS
+  // -------------------------------------------------------
+  function verifyAndRedirect(paymentResponse, redirectUrl, triggerEl) {
     fetchJson(VERCEL_BASE_URL + "/api/verify-payment", {
-      method: "POST",
+      method:  "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
+      body:    JSON.stringify({
         razorpay_payment_id: paymentResponse.razorpay_payment_id,
-        razorpay_order_id: paymentResponse.razorpay_order_id,
-        razorpay_signature: paymentResponse.razorpay_signature,
+        razorpay_order_id:   paymentResponse.razorpay_order_id,
+        razorpay_signature:  paymentResponse.razorpay_signature,
       }),
     })
       .then(function (data) {
         sessionStorage.removeItem(PENDING_ORDER_KEY);
+        // redirect_url from server contains all customer + payment params
         window.location.href = data.redirect_url || redirectUrl;
       })
       .catch(function (err) {
         console.error("[rzp] verify-payment failed:", err);
-        setLoading(btn, false);
+        if (triggerEl) triggerEl.classList.remove("loading");
         sessionStorage.removeItem(PENDING_ORDER_KEY);
-        showError(
-          btn,
-          "Payment received but verification failed. Please contact us with your payment ID.",
-        );
+        alert("Payment received but verification failed. Please contact us with your payment ID.");
       });
   }
 
+  // -------------------------------------------------------
   // CRASH RECOVERY
+  // -------------------------------------------------------
   function recoverCrashedPayment() {
     var raw = sessionStorage.getItem(PENDING_ORDER_KEY);
     if (!raw) return;
 
     var pending;
-    try {
-      pending = JSON.parse(raw);
-    } catch (e) {
+    try { pending = JSON.parse(raw); } catch (e) {
       sessionStorage.removeItem(PENDING_ORDER_KEY);
       return;
     }
 
+    // Ignore entries older than 1 hour
     if (!pending.order_id || Date.now() - pending.ts > 3600000) {
       sessionStorage.removeItem(PENDING_ORDER_KEY);
       return;
     }
 
     fetchJson(
-      VERCEL_BASE_URL +
-        "/api/check-order?order_id=" +
-        encodeURIComponent(pending.order_id),
+      VERCEL_BASE_URL + "/api/check-order?order_id=" +
+        encodeURIComponent(pending.order_id)
     )
       .then(function (data) {
         if (data.status === "paid") {
           sessionStorage.removeItem(PENDING_ORDER_KEY);
           window.location.href =
             (pending.redirect_url || "/thank-you/") +
-            "?ref=" +
-            pending.order_id +
-            "&recovered=1";
+            "?ref=" + pending.order_id + "&recovered=1";
         } else {
           sessionStorage.removeItem(PENDING_ORDER_KEY);
         }
       })
-      .catch(function () {
-        /* Network error - try again next page load */
-      });
+      .catch(function () { /* try again next load */ });
   }
 
+  // -------------------------------------------------------
   // UTILITIES
+  // -------------------------------------------------------
 
   function loadRazorpayScript() {
     return new Promise(function (resolve, reject) {
-      if (window.Razorpay) {
-        resolve();
-        return;
-      }
-      var s = document.createElement("script");
-      s.src = RAZORPAY_CHECKOUT_URL;
+      if (window.Razorpay) { resolve(); return; }
+      var s    = document.createElement("script");
+      s.src    = RAZORPAY_CHECKOUT_URL;
       s.onload = resolve;
-      s.onerror = function () {
-        reject(new Error("Razorpay script failed to load"));
-      };
+      s.onerror = function () { reject(new Error("Failed to load Razorpay script")); };
       document.head.appendChild(s);
     });
   }
@@ -237,29 +306,9 @@
     });
   }
 
-  function setLoading(btn, isLoading) {
-    btn.disabled = isLoading;
-    if (isLoading) {
-      btn._originalText = btn.textContent;
-      btn.textContent = "Please wait...";
-    } else {
-      btn.textContent = btn._originalText || btn.textContent;
-    }
+  function getVal(id) {
+    var el = document.getElementById(id);
+    return el ? el.value.trim() : "";
   }
 
-  function showError(btn, message) {
-    var existing = btn.parentNode.querySelector(".rzp-error-msg");
-    if (existing) existing.remove();
-
-    var p = document.createElement("p");
-    p.className = "rzp-error-msg";
-    p.style.cssText =
-      "color:#c0392b;font-size:14px;margin:8px 0 0;font-weight:500;";
-    p.textContent = message;
-    btn.parentNode.insertBefore(p, btn.nextSibling);
-
-    setTimeout(function () {
-      if (p.parentNode) p.remove();
-    }, 8000);
-  }
 })();
