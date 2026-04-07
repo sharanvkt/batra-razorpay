@@ -108,7 +108,10 @@ base.js is loaded globally — once, in the footer, site-wide.
 
 After verified payment, redirect URL contains:
 `ref`, `payment_id`, `amount` (INR not paise), `currency`,
-`product`, `product_name`, `name`, `email`, `phone`, `dob`, `gender`
+`product`, `product_name`, `cname`, `email`, `phone`, `dob`, `gender`
+
+Note: param is `cname` not `name` — `name` is a WordPress reserved query variable
+that hijacks page routing when present in the URL.
 
 Read with `new URLSearchParams(window.location.search)` for Meta Pixel, GTM etc.
 

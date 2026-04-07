@@ -79,8 +79,8 @@ module.exports = async function handler(req, res) {
     product: notes.product_id || "",
     product_name: notes.product_name || "",
 
-    // Customer info
-    name: notes.customer_name || "",
+    // Customer info (note: "name" is a WordPress reserved query var — use "cname")
+    cname: notes.customer_name || "",
     email: notes.customer_email || "",
     phone: notes.customer_phone || "",
     dob: notes.customer_dob || "",
