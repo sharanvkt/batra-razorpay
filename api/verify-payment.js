@@ -66,7 +66,7 @@ module.exports = async function handler(req, res) {
   // Build thank-you URL with all data as params
   // These are available on the TY page for Meta Pixel, GTM etc.
   const origin = req.headers.origin || "https://thebatraanumerology.org";
-  const thankyouPath = notes.thankyou_path || "/thank-you/";
+  const thankyouPath = (notes.thankyou_path || "/thank-you/").replace(/\/?$/, "/");
 
   const params = new URLSearchParams({
     // Payment info
