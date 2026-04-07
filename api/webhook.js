@@ -10,6 +10,7 @@
 
 const crypto = require("crypto");
 const { sendCapiEvent } = require("../lib/meta-capi");
+const { getProduct } = require("../lib/catalog");
 
 // Raw body required for HMAC — disable Vercel body parser
 module.exports.config = {
@@ -108,8 +109,9 @@ module.exports = async function handler(req, res) {
         }
       }
 
-      // pabbly_webhook is per-product — set in catalog, stored in notes
-      const pabblyUrl = notes.pabbly_webhook || "";
+      // pabbly_webhook looked up from catalog (not stored in notes anymore)
+      const product = getProduct(notes.product_id);
+      const pabblyUrl = product?.pabbly_webhook || "";
 
       if (pabblyUrl && pabblyUrl.startsWith("https://")) {
         console.log(`[webhook] Firing Pabbly for product: ${notes.product_id}`);

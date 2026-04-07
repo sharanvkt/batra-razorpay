@@ -14,6 +14,7 @@
 const crypto = require("crypto");
 const { setCors } = require("../lib/cors");
 const razorpay = require("../lib/razorpay");
+const { getProduct } = require("../lib/catalog");
 
 module.exports = async function handler(req, res) {
   if (setCors(req, res)) return;
@@ -66,7 +67,8 @@ module.exports = async function handler(req, res) {
   // Build thank-you URL with all data as params
   // These are available on the TY page for Meta Pixel, GTM etc.
   const origin = req.headers.origin || "https://thebatraanumerology.org";
-  const thankyouPath = (notes.thankyou_path || "/thank-you/").replace(/\/?$/, "/");
+  const product = getProduct(notes.product_id);
+  const thankyouPath = (product?.thankyou_path || "/thank-you/").replace(/\/?$/, "/");
 
   const params = new URLSearchParams({
     // Payment info

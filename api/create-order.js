@@ -68,12 +68,9 @@ module.exports = async function handler(req, res) {
       currency: product.currency,
       receipt: `rcpt_${Date.now()}`,
       notes: {
-        // Product info
+        // Product info (thankyou_path + pabbly_webhook looked up from catalog at runtime)
         product_id,
         product_name: product.name,
-        thankyou_path: product.thankyou_path,
-        // Pabbly webhook from catalog — webhook handler reads this
-        pabbly_webhook: product.pabbly_webhook,
         // Customer info
         customer_name: fullName,
         customer_email: c.email,
