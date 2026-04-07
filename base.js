@@ -40,6 +40,7 @@
   // Active product_id — set when a form-cta button is clicked
   var activeProductId   = null;
   var activeRedirectUrl = null;
+  var activeUtmParams   = null; // packed UTM string captured at CTA click
 
   // Boot — safe for both early and late (footer) script loading
   function boot() {
@@ -73,6 +74,7 @@
 
       activeProductId   = btn.getAttribute("data-product-id") || "";
       activeRedirectUrl = btn.getAttribute("data-redirect-url") || "/thank-you/";
+      activeUtmParams   = captureUtmParams();
 
       if (!activeProductId) {
         console.error("[rzp] .form-cta button is missing data-product-id");
@@ -142,14 +144,14 @@
       }
 
       // Start payment with the product_id from the clicked form-cta button
-      startPayment(activeProductId, customer, activeRedirectUrl, submitBtn);
+      startPayment(activeProductId, customer, activeRedirectUrl, submitBtn, activeUtmParams);
     });
   }
 
   // -------------------------------------------------------
   // CORE: POST to create-order then open Razorpay popup
   // -------------------------------------------------------
-  function startPayment(productId, customer, redirectUrl, triggerEl) {
+  function startPayment(productId, customer, redirectUrl, triggerEl, utmParams) {
     if (!productId) {
       console.error("[rzp] No product_id set. Did you click a .form-cta button?");
       if (triggerEl) triggerEl.classList.remove("loading");
@@ -159,7 +161,7 @@
     fetchJson(VERCEL_BASE_URL + "/api/create-order", {
       method:  "POST",
       headers: { "Content-Type": "application/json" },
-      body:    JSON.stringify({ product_id: productId, customer: customer }),
+      body:    JSON.stringify({ product_id: productId, customer: customer, utm_params: utmParams || undefined }),
     })
       .then(function (orderData) {
         // AddToCart — order created, order_id available for dedup
@@ -310,6 +312,18 @@
   // -------------------------------------------------------
   // META CAPI HELPERS
   // -------------------------------------------------------
+
+  function captureUtmParams() {
+    if (!window.location.search) return null;
+    var src = new URLSearchParams(window.location.search);
+    var out = new URLSearchParams();
+    ["utm_source", "utm_medium", "utm_campaign", "utm_content",
+     "Adset Content", "Ad_id", "fbc_id", "h_ad_id"].forEach(function (k) {
+      var v = src.get(k);
+      if (v) out.set(k, v);
+    });
+    return out.toString() || null;
+  }
 
   function getCookie(name) {
     var match = document.cookie.match(new RegExp("(^| )" + name + "=([^;]+)"));

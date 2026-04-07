@@ -34,7 +34,7 @@ module.exports = async function handler(req, res) {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  const { product_id, customer = {} } = req.body || {};
+  const { product_id, customer = {}, utm_params } = req.body || {};
 
   if (!product_id) {
     return res.status(400).json({ error: "product_id is required" });
@@ -80,6 +80,10 @@ module.exports = async function handler(req, res) {
         customer_phone: c.phone,
         customer_dob: c.dob,
         customer_gender: c.gender,
+        // UTMs packed as one string to stay under 15-key notes limit
+        ...(utm_params && typeof utm_params === "string"
+          ? { utm_params: utm_params.replace(/<[^>]*>/g, "").slice(0, 500) }
+          : {}),
       },
     });
   } catch (err) {

@@ -97,6 +97,17 @@ module.exports = async function handler(req, res) {
         event_id: eventId,
       };
 
+      // Unpack UTMs from notes into individual Pabbly fields
+      if (notes.utm_params) {
+        try {
+          new URLSearchParams(notes.utm_params).forEach(function (value, key) {
+            payload[key] = value;
+          });
+        } catch (e) {
+          console.warn("[webhook] Could not parse utm_params:", e.message);
+        }
+      }
+
       // pabbly_webhook is per-product — set in catalog, stored in notes
       const pabblyUrl = notes.pabbly_webhook || "";
 
