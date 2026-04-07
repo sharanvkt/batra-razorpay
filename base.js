@@ -46,6 +46,10 @@
     hookFormCtaButtons();
     hookModalForm();
     recoverCrashedPayment();
+
+    // PageView — fires once on load (no dedup needed)
+    var pvId = "pv-" + Date.now() + "-" + Math.random().toString(36).slice(2, 6);
+    trackEvent("PageView", pvId, {});
   }
 
   if (document.readyState === "loading") {
@@ -74,6 +78,10 @@
         console.error("[rzp] .form-cta button is missing data-product-id");
         return;
       }
+
+      // InitiateCheckout — CTA clicked (no dedup needed)
+      var icId = "ic-" + activeProductId + "-" + Date.now();
+      trackEvent("InitiateCheckout", icId, { content_ids: [activeProductId] }, { product_id: activeProductId });
 
       // Open the modal (your existing modal logic)
       var modal = document.getElementById("leadFormModal");
@@ -154,6 +162,15 @@
       body:    JSON.stringify({ product_id: productId, customer: customer }),
     })
       .then(function (orderData) {
+        // AddToCart — order created, order_id available for dedup
+        var atcId = "atc-" + orderData.order_id;
+        trackEvent(
+          "AddToCart",
+          atcId,
+          { value: orderData.amount / 100, currency: "INR", content_ids: [productId] },
+          { product_id: productId, amount_paise: orderData.amount, customer: customer }
+        );
+
         return loadRazorpayScript().then(function () {
           openCheckout(orderData, redirectUrl, triggerEl);
         });
@@ -196,6 +213,16 @@
       theme: { color: "#B8860B" },
 
       handler: function (paymentResponse) {
+        // Purchase browser fbq — CAPI fires from webhook.js (server-authoritative)
+        var purchId = "purch-" + paymentResponse.razorpay_order_id;
+        if (typeof fbq !== "undefined") {
+          fbq("track", "Purchase",
+            { value: orderData.amount / 100, currency: orderData.currency || "INR",
+              content_ids: [orderData.order_id] },
+            { eventID: purchId }
+          );
+        }
+
         verifyAndRedirect(paymentResponse, redirectUrl, triggerEl);
       },
 
@@ -278,6 +305,37 @@
         }
       })
       .catch(function () { /* try again next load */ });
+  }
+
+  // -------------------------------------------------------
+  // META CAPI HELPERS
+  // -------------------------------------------------------
+
+  function getCookie(name) {
+    var match = document.cookie.match(new RegExp("(^| )" + name + "=([^;]+)"));
+    return match ? match[2] : null;
+  }
+
+  // Fire browser fbq event AND CAPI proxy in parallel (fire-and-forget)
+  function trackEvent(eventName, eventId, fbqData, capiExtra) {
+    if (typeof fbq !== "undefined") {
+      fbq("track", eventName, fbqData || {}, { eventID: eventId });
+    }
+    var payload = Object.assign(
+      {
+        event_name:       eventName,
+        event_id:         eventId,
+        event_source_url: window.location.href,
+        fbp:              getCookie("_fbp"),
+        fbc:              getCookie("_fbc"),
+      },
+      capiExtra || {}
+    );
+    fetch(VERCEL_BASE_URL + "/api/meta-events", {
+      method:  "POST",
+      headers: { "Content-Type": "application/json" },
+      body:    JSON.stringify(payload),
+    }).catch(function () {});
   }
 
   // -------------------------------------------------------
