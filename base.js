@@ -334,6 +334,7 @@
 
   // Fire browser fbq event AND CAPI proxy in parallel (fire-and-forget)
   function trackEvent(eventName, eventId, fbqData, capiExtra) {
+    if (document.querySelector('meta[name="no-meta-pixel"]')) return;
     if (typeof fbq !== "undefined") {
       fbq("track", eventName, fbqData || {}, { eventID: eventId });
     }
