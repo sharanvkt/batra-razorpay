@@ -44,6 +44,7 @@
 
   // Boot — safe for both early and late (footer) script loading
   function boot() {
+    createLoadingOverlay();
     hookFormCtaButtons();
     hookModalForm();
     recoverCrashedPayment();
@@ -143,6 +144,8 @@
         document.body.style.overflow = "";
       }
 
+      showOverlay("Setting up payment\u2026");
+
       // Start payment with the product_id from the clicked form-cta button
       startPayment(activeProductId, customer, activeRedirectUrl, submitBtn, activeUtmParams);
     });
@@ -154,6 +157,7 @@
   function startPayment(productId, customer, redirectUrl, triggerEl, utmParams) {
     if (!productId) {
       console.error("[rzp] No product_id set. Did you click a .form-cta button?");
+      hideOverlay();
       if (triggerEl) triggerEl.classList.remove("loading");
       return;
     }
@@ -179,6 +183,7 @@
       })
       .catch(function (err) {
         console.error("[rzp] create-order failed:", err);
+        hideOverlay();
         if (triggerEl) triggerEl.classList.remove("loading");
         alert("Could not start payment. Please try again.");
       });
@@ -231,6 +236,7 @@
       modal: {
         ondismiss: function () {
           sessionStorage.removeItem(PENDING_ORDER_KEY);
+          hideOverlay();
           if (triggerEl) triggerEl.classList.remove("loading");
         },
         escape:    true,
@@ -240,10 +246,12 @@
 
     rzp.on("payment.failed", function (response) {
       sessionStorage.removeItem(PENDING_ORDER_KEY);
+      hideOverlay();
       if (triggerEl) triggerEl.classList.remove("loading");
       alert("Payment failed: " + (response.error.description || "Please try again."));
     });
 
+    hideOverlay();
     rzp.open();
   }
 
@@ -251,6 +259,7 @@
   // VERIFY + REDIRECT TO TY PAGE WITH ALL PARAMS
   // -------------------------------------------------------
   function verifyAndRedirect(paymentResponse, redirectUrl, triggerEl) {
+    showOverlay("Confirming payment\u2026");
     fetchJson(VERCEL_BASE_URL + "/api/verify-payment", {
       method:  "POST",
       headers: { "Content-Type": "application/json" },
@@ -267,6 +276,7 @@
       })
       .catch(function (err) {
         console.error("[rzp] verify-payment failed:", err);
+        hideOverlay();
         if (triggerEl) triggerEl.classList.remove("loading");
         sessionStorage.removeItem(PENDING_ORDER_KEY);
         alert("Payment received but verification failed. Please contact us with your payment ID.");
@@ -350,6 +360,42 @@
       headers: { "Content-Type": "application/json" },
       body:    JSON.stringify(payload),
     }).catch(function () {});
+  }
+
+  // -------------------------------------------------------
+  // LOADING OVERLAY
+  // -------------------------------------------------------
+
+  function createLoadingOverlay() {
+    if (document.getElementById("rzpOverlay")) return;
+    var style = document.createElement("style");
+    style.textContent = [
+      "#rzpOverlay{display:none;position:fixed;inset:0;background:rgba(255,255,255,0.96);",
+      "z-index:999999;flex-direction:column;align-items:center;justify-content:center;",
+      "font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}",
+      "#rzpOverlay.rzp-visible{display:flex}",
+      ".rzp-spinner{width:44px;height:44px;border:3px solid #f0e6c8;",
+      "border-top-color:#B8860B;border-radius:50%;animation:rzpSpin 0.75s linear infinite}",
+      "@keyframes rzpSpin{to{transform:rotate(360deg)}}",
+      "#rzpOverlayMsg{margin-top:18px;font-size:15px;color:#5a4a2a;font-weight:500;letter-spacing:0.02em}",
+    ].join("");
+    document.head.appendChild(style);
+    var div = document.createElement("div");
+    div.id = "rzpOverlay";
+    div.innerHTML = '<div class="rzp-spinner"></div><p id="rzpOverlayMsg"></p>';
+    document.body.appendChild(div);
+  }
+
+  function showOverlay(msg) {
+    var el = document.getElementById("rzpOverlay");
+    if (!el) return;
+    document.getElementById("rzpOverlayMsg").textContent = msg || "";
+    el.classList.add("rzp-visible");
+  }
+
+  function hideOverlay() {
+    var el = document.getElementById("rzpOverlay");
+    if (el) el.classList.remove("rzp-visible");
   }
 
   // -------------------------------------------------------
