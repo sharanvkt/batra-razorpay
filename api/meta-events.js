@@ -28,9 +28,6 @@ module.exports = async function handler(req, res) {
   if (req.method === "OPTIONS") return res.status(200).end();
   if (req.method !== "POST") return res.status(405).end();
 
-  // Always respond 200 immediately — browser must not block on this
-  res.status(200).json({ ok: true });
-
   const {
     event_name,
     event_id,
@@ -44,7 +41,7 @@ module.exports = async function handler(req, res) {
 
   if (!event_name || !event_id) {
     console.warn("[meta-events] Missing event_name or event_id — skipping");
-    return;
+    return res.status(200).json({ ok: true });
   }
 
   // Enrich with server-side signals
@@ -70,6 +67,8 @@ module.exports = async function handler(req, res) {
     };
   }
 
+  // Await CAPI before responding — Vercel freezes the function after res.end(),
+  // so any async work after the response is not guaranteed to complete.
   await sendCapiEvent({
     event_name,
     event_id,
@@ -91,4 +90,8 @@ module.exports = async function handler(req, res) {
   }).catch((err) => {
     console.error("[meta-events] sendCapiEvent error:", err.message);
   });
+
+  // Respond after CAPI completes — browser fires this fire-and-forget so
+  // the extra 200–500ms is invisible to the user.
+  res.status(200).json({ ok: true });
 };

@@ -220,16 +220,8 @@
       theme: { color: "#2371ec" },
 
       handler: function (paymentResponse) {
-        // Purchase browser fbq — CAPI fires from webhook.js (server-authoritative)
-        var purchId = "purch-" + paymentResponse.razorpay_order_id;
-        if (typeof fbq !== "undefined") {
-          fbq("track", "Purchase",
-            { value: orderData.amount / 100, currency: orderData.currency || "INR",
-              content_ids: [orderData.order_id] },
-            { eventID: purchId }
-          );
-        }
-
+        // Browser Purchase fires on the TY page (manual fbq code there).
+        // CAPI Purchase fires from webhook.js (server-authoritative).
         verifyAndRedirect(paymentResponse, redirectUrl, triggerEl);
       },
 
