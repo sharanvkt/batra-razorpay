@@ -217,7 +217,7 @@
         contact: orderData.customer ? orderData.customer.contact : "",
       },
 
-      theme: { color: "#B8860B" },
+      theme: { color: "#2371ec" },
 
       handler: function (paymentResponse) {
         // Purchase browser fbq — CAPI fires from webhook.js (server-authoritative)
@@ -374,10 +374,10 @@
       "z-index:999999;flex-direction:column;align-items:center;justify-content:center;",
       "font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}",
       "#rzpOverlay.rzp-visible{display:flex}",
-      ".rzp-spinner{width:44px;height:44px;border:3px solid #f0e6c8;",
-      "border-top-color:#B8860B;border-radius:50%;animation:rzpSpin 0.75s linear infinite}",
+      ".rzp-spinner{width:44px;height:44px;border:3px solid #dbeafe;",
+      "border-top-color:#2371ec;border-radius:50%;animation:rzpSpin 0.75s linear infinite}",
       "@keyframes rzpSpin{to{transform:rotate(360deg)}}",
-      "#rzpOverlayMsg{margin-top:18px;font-size:15px;color:#5a4a2a;font-weight:500;letter-spacing:0.02em}",
+      "#rzpOverlayMsg{margin-top:18px;font-size:15px;color:#1e3a5f;font-weight:500;letter-spacing:0.02em}",
     ].join("");
     document.head.appendChild(style);
     var div = document.createElement("div");
