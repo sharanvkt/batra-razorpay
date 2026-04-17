@@ -72,6 +72,7 @@ module.exports = async function handler(req, res) {
       const payment = event.payload?.payment?.entity;
       const order = event.payload?.order?.entity;
       const notes = { ...(payment?.notes || {}), ...(order?.notes || {}) };
+      console.log('[webhook] notes debug:', JSON.stringify({ payment_notes: payment?.notes, order_notes: order?.notes }));
 
       // Build Pabbly payload with all customer + payment data
       const payload = {
