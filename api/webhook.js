@@ -71,7 +71,7 @@ module.exports = async function handler(req, res) {
     if (event.event === "payment.captured" || event.event === "order.paid") {
       const payment = event.payload?.payment?.entity;
       const order = event.payload?.order?.entity;
-      const notes = payment?.notes || order?.notes || {};
+      const notes = { ...(payment?.notes || {}), ...(order?.notes || {}) };
 
       // Build Pabbly payload with all customer + payment data
       const payload = {
