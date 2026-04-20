@@ -4,7 +4,7 @@
   "description": "Razorpay payment backend for thebatraanumerology.org",
   "private": true,
   "engines": {
-    "node": ">=18.x"
+    "node": ">=20.x"
   },
   "dependencies": {
     "firebase-admin": "^13.4.0",

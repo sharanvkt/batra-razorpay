@@ -125,8 +125,8 @@ module.exports = async function handler(req, res) {
         );
       }
 
-      // Firestore — non-blocking, failures never affect payment flow
-      if (db) {
+      // Firestore — only for orders that came through our create-order system
+      if (db && payload.product_id) {
         db.collection("transactions")
           .doc(payload.order_id)
           .set({ ...payload, created_at: new Date().toISOString() })
