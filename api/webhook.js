@@ -11,6 +11,7 @@
 const crypto = require("crypto");
 const { sendCapiEvent } = require("../lib/meta-capi");
 const { getProduct } = require("../lib/catalog");
+const { db } = require("../lib/firebase");
 
 // Raw body required for HMAC — disable Vercel body parser
 module.exports.config = {
@@ -122,6 +123,14 @@ module.exports = async function handler(req, res) {
           "[webhook] No valid pabbly_webhook in order notes for:",
           notes.product_id,
         );
+      }
+
+      // Firestore — non-blocking, failures never affect payment flow
+      if (db) {
+        db.collection("transactions")
+          .doc(payload.order_id)
+          .set({ ...payload, created_at: new Date().toISOString() })
+          .catch((err) => console.error("[webhook] Firestore write failed:", err.message));
       }
 
       // Meta CAPI Purchase — server-authoritative, deduplicated via purch-{order_id}
