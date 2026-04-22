@@ -81,12 +81,22 @@ module.exports = async function handler(req, res) {
     product: notes.product_id || "",
     product_name: notes.product_name || "",
 
-    // Customer info (note: "name" is a WordPress reserved query var — use "cname")
+    // Standard customer fields
+    // "name" is a WordPress reserved query var — always use "cname"
     cname: notes.customer_name || "",
     email: notes.customer_email || "",
     phone: notes.customer_phone || "",
-    dob: notes.customer_dob || "",
-    gender: notes.customer_gender || "",
+  });
+
+  // Pass through any extra customer_* note keys (e.g. customer_city → city=...)
+  const standardKeys = new Set([
+    "customer_name", "customer_email", "customer_phone",
+    "product_id", "product_name", "utm_params",
+  ]);
+  Object.keys(notes).forEach((key) => {
+    if (key.startsWith("customer_") && !standardKeys.has(key) && notes[key]) {
+      params.set(key.replace("customer_", ""), notes[key]);
+    }
   });
 
   const redirectUrl = `${origin}${thankyouPath}?${params.toString()}`;
