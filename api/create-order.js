@@ -114,7 +114,7 @@ module.exports = async function handler(req, res) {
     // Return customer data for Razorpay popup prefill
     customer: {
       name: fullName,
-      email: c.email,
+      email: c.email || "",
       contact: c.phone ? "+91" + c.phone : "",
     },
   });
