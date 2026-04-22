@@ -414,9 +414,4 @@
     });
   }
 
-  function getVal(id) {
-    var el = document.getElementById(id);
-    return el ? el.value.trim() : "";
-  }
-
 })();
