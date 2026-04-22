@@ -1,0 +1,807 @@
+<!-- Popup Modal Overlay -->
+    <div id="leadFormModal" class="modal-overlay">
+        <div class="modal-container">
+            <!-- Close Button -->
+            <button class="modal-close" id="closeModal" aria-label="Close form">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+
+            <!-- Progress Dots -->
+            <div class="progress-dots">
+                <span class="dot active" data-step="1"></span>
+                <span class="dot" data-step="2"></span>
+            </div>
+
+            <!-- Form -->
+            <form id="leadForm" class="lead-form">
+                
+                <!-- Step 1: Personal Information -->
+                <div class="form-step active" id="step1">
+                    <div class="step-header">
+                        <h2 class="form-title">Join Mobile Numerology Workshop</h2>
+                        <p class="form-subtitle"> Free Numerology Intelligence Kit worth ₹5,000 + Lifetime Access</p>
+                    </div>
+
+                    <div class="form-fields">
+                        <!-- Full Name -->
+                        <div class="form-field">
+                            <label for="full_name" class="form-label">
+                                Full Name <span class="required">*</span>
+                            </label>
+                            <input 
+                                type="text" 
+                                id="full_name" 
+                                name="full_name" 
+                                class="form-input" 
+                                required
+                                placeholder="Enter your full name"
+                            >
+                            <span class="error-message" id="full_nameError"></span>
+                        </div>
+
+                        <!-- Email -->
+                        <div class="form-field">
+                            <label for="email" class="form-label">
+                                Email <span class="required">*</span>
+                            </label>
+                            <input 
+                                type="email" 
+                                id="email" 
+                                name="email" 
+                                class="form-input" 
+                                required
+                                placeholder="your.email@example.com"
+                            >
+                            <span class="error-message" id="emailError"></span>
+                        </div>
+                    </div>
+
+                    <!-- Continue Button -->
+                    <button type="button" class="submit-btn" id="continueBtn">
+                        <span class="btn-text">Continue</span>
+                        <svg class="btn-arrow" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                            <path d="M7.5 15L12.5 10L7.5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Step 2: Additional Details -->
+                <div class="form-step" id="step2">
+                    <div class="step-header">
+                        <h2 class="form-title">Almost There!</h2>
+                        <p class="form-subtitle">Last step to unlock your FREE Numerology Intelligence Kit worth ₹5,000/-</p>
+                    </div>
+
+                    <div class="form-fields">
+                        <!-- Phone -->
+                        <div class="form-field">
+                            <label for="phone" class="form-label">
+                                Phone <span class="required">*</span>
+                            </label>
+                            <input 
+                                type="tel" 
+                                id="phone" 
+                                name="phone" 
+                                class="form-input" 
+                                required
+                                placeholder="9876543210"
+                                maxlength="10"
+                            >
+                            <span class="form-hint">Please enter the valid Whatsapp number</span>
+                            <span class="error-message" id="phoneError"></span>
+                        </div>
+
+                        <!-- City -->
+                        <div class="form-field">
+                            <label for="city" class="form-label">
+                                City <span class="required">*</span>
+                            </label>
+                            <input 
+                                type="text" 
+                                id="city" 
+                                name="city" 
+                                class="form-input" 
+                                required
+                                placeholder="Enter your city"
+                            >
+                            <span class="error-message" id="cityError"></span>
+                        </div>
+                    </div>
+
+                    <!-- Back and Submit Buttons -->
+                    <div class="button-group">
+                        <button type="button" class="back-btn" id="backBtn">
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                <path d="M12.5 15L7.5 10L12.5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            <span>Back</span>
+                        </button>
+                        <button type="submit" class="submit-btn" id="submitBtn">
+                            <span class="btn-text">Secure My Spot @ ₹99</span>
+                            <span class="btn-loader"></span>
+                        </button>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+    <style>
+        /* Modal Overlay */
+        .modal-overlay {
+            display: none !important;
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100% !important;
+            height: 100% !important;
+            background-color: rgba(0, 0, 0, 0.6) !important;
+            backdrop-filter: blur(4px) !important;
+            z-index: 9999 !important;
+            overflow-y: auto !important;
+            padding: 20px !important;
+            animation: fadeIn 0.3s ease !important;
+        }
+
+        .modal-overlay.active {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Modal Container */
+        .modal-container {
+            background: #ffffff !important;
+            border-radius: 20px !important;
+            max-width: 480px !important;
+            width: 100% !important;
+            padding: 48px 40px 40px !important;
+            position: relative !important;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3) !important;
+            animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
+            margin: 0 !important;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(40px) scale(0.96);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0) scale(1);
+                opacity: 1;
+            }
+        }
+
+        /* Close Button */
+        .modal-close {
+            position: absolute !important;
+            top: 20px !important;
+            right: 20px !important;
+            background: none !important;
+            border: none !important;
+            cursor: pointer !important;
+            color: #999 !important;
+            transition: all 0.3s ease !important;
+            padding: 8px !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            border-radius: 50% !important;
+            z-index: 10 !important;
+            width: auto !important;
+            height: auto !important;
+            line-height: 1 !important;
+            text-decoration: none !important;
+            box-shadow: none !important;
+        }
+
+        .modal-close:hover {
+            color: #791F1F !important;
+            background: rgba(121, 31, 31, 0.1) !important;
+            transform: rotate(90deg) !important;
+        }
+
+        /* Progress Dots */
+        .progress-dots {
+            display: flex !important;
+            gap: 8px !important;
+            justify-content: center !important;
+            margin-bottom: 32px !important;
+            margin-top: 0 !important;
+        }
+
+        .dot {
+            width: 8px !important;
+            height: 8px !important;
+            border-radius: 50% !important;
+            background: #e0e0e0 !important;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
+            border: none !important;
+            padding: 0 !important;
+            margin: 0 !important;
+        }
+
+        .dot.active {
+            background: #791F1F !important;
+            width: 24px !important;
+            border-radius: 4px !important;
+        }
+
+        /* Form Styles */
+        .lead-form {
+            position: relative !important;
+            overflow: hidden !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+
+        /* Form Steps */
+        .form-step {
+            display: none !important;
+            animation: slideInRight 0.5s cubic-bezier(0.16, 1, 0.3, 1) !important;
+        }
+
+        .form-step.active {
+            display: block !important;
+        }
+
+        .form-step.slide-out-left {
+            animation: slideOutLeft 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
+        }
+
+        .form-step.slide-in-left {
+            animation: slideInLeft 0.5s cubic-bezier(0.16, 1, 0.3, 1) !important;
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideOutLeft {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(-100%);
+                opacity: 0;
+            }
+        }
+
+        @keyframes slideInLeft {
+            from {
+                transform: translateX(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* Step Header */
+        .step-header {
+            margin-bottom: 32px !important;
+            text-align: center !important;
+            margin-top: 0 !important;
+            padding: 0 !important;
+        }
+
+        .form-title {
+            font-size: 28px !important;
+            font-weight: 700 !important;
+            color: #1a1a1a !important;
+            margin: 0 0 8px 0 !important;
+            line-height: 1.2 !important;
+            padding: 0 !important;
+            text-align: center !important;
+            font-family: inherit !important;
+            border: none !important;
+        }
+
+        .form-subtitle {
+            font-size: 15px !important;
+            color: #666 !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            line-height: 1.5 !important;
+            font-weight: normal !important;
+            text-align: center !important;
+        }
+
+        /* Form Fields */
+        .form-fields {
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 24px !important;
+            margin-bottom: 32px !important;
+            margin-top: 0 !important;
+            padding: 0 !important;
+        }
+
+        .form-field {
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 8px !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+
+        .form-label {
+            font-size: 14px !important;
+            font-weight: 600 !important;
+            color: #333 !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            line-height: 1.4 !important;
+            display: block !important;
+        }
+
+        .required {
+            color: #791F1F !important;
+        }
+
+        /* Input Styles */
+        .form-input {
+            padding: 14px 16px !important;
+            font-size: 15px !important;
+            border: 2px solid #e0e0e0 !important;
+            border-radius: 10px !important;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+            font-family: inherit !important;
+            background: #ffffff !important;
+            width: 100% !important;
+            box-sizing: border-box !important;
+            margin: 0 !important;
+            line-height: 1.5 !important;
+            color: #333 !important;
+            font-weight: normal !important;
+            outline: none !important;
+            box-shadow: none !important;
+            text-align: left !important;
+            height: auto !important;
+        }
+
+        .form-input:focus {
+            outline: none !important;
+            border-color: #791F1F !important;
+            box-shadow: 0 0 0 4px rgba(121, 31, 31, 0.08) !important;
+            transform: translateY(-1px) !important;
+        }
+
+        .form-input::placeholder {
+            color: #999 !important;
+            opacity: 1 !important;
+        }
+
+        /* Select Dropdown */
+        .form-select {
+            appearance: none !important;
+            -webkit-appearance: none !important;
+            -moz-appearance: none !important;
+            background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L6 6L11 1' stroke='%23666' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E") !important;
+            background-repeat: no-repeat !important;
+            background-position: right 16px center !important;
+            padding-right: 44px !important;
+            cursor: pointer !important;
+        }
+
+        .form-select option {
+            padding: 10px !important;
+            color: #333 !important;
+        }
+
+        /* Form Hint */
+        .form-hint {
+            font-size: 13px !important;
+            color: #666 !important;
+            margin-top: -4px !important;
+            margin-bottom: 0 !important;
+            padding: 0 !important;
+            line-height: 1.4 !important;
+        }
+
+        /* Error Message */
+        .error-message {
+            font-size: 13px !important;
+            color: #dc2626 !important;
+            display: none !important;
+            margin-top: -4px !important;
+            margin-bottom: 0 !important;
+            padding: 0 !important;
+            line-height: 1.4 !important;
+        }
+
+        .error-message.show {
+            display: block !important;
+            animation: shake 0.4s ease !important;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-8px); }
+            75% { transform: translateX(8px); }
+        }
+
+        .form-input.error {
+            border-color: #dc2626 !important;
+            animation: shake 0.4s ease !important;
+        }
+
+        /* Buttons */
+        .submit-btn {
+            background: #FF8B00 !important;
+            background-image: linear-gradient(135deg, #FF8B00 0%, #ff9f26 100%) !important;
+            color: #ffffff !important;
+            border: none !important;
+            padding: 16px 32px !important;
+            font-size: 16px !important;
+            font-weight: 600 !important;
+            border-radius: 10px !important;
+            cursor: pointer !important;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+            position: relative !important;
+            overflow: hidden !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            gap: 8px !important;
+            width: 100% !important;
+            margin: 0 !important;
+            line-height: 1.5 !important;
+            text-decoration: none !important;
+            text-align: center !important;
+            box-shadow: 0 4px 12px rgba(255, 139, 0, 0.2) !important;
+            height: auto !important;
+            min-height: 52px !important;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px) !important;
+            box-shadow: 0 12px 24px rgba(255, 139, 0, 0.3) !important;
+            background: #FF8B00 !important;
+            background-image: linear-gradient(135deg, #FF8B00 0%, #ff9f26 100%) !important;
+            color: #ffffff !important;
+        }
+
+        .submit-btn:focus {
+            background: #FF8B00 !important;
+            background-image: linear-gradient(135deg, #FF8B00 0%, #ff9f26 100%) !important;
+            color: #ffffff !important;
+        }
+
+        .submit-btn:active {
+            transform: translateY(0) !important;
+        }
+
+        .submit-btn.loading {
+            pointer-events: none !important;
+        }
+
+        .submit-btn.loading .btn-text {
+            opacity: 0 !important;
+        }
+
+        .submit-btn.loading .btn-arrow {
+            opacity: 0 !important;
+        }
+
+        .submit-btn.loading .btn-loader {
+            display: block !important;
+        }
+
+        .btn-text {
+            transition: opacity 0.3s ease !important;
+        }
+
+        .btn-arrow {
+            transition: all 0.3s ease !important;
+            flex-shrink: 0 !important;
+        }
+
+        .submit-btn:hover .btn-arrow {
+            transform: translateX(4px) !important;
+        }
+
+        .btn-loader {
+            display: none !important;
+            position: absolute !important;
+            top: 50% !important;
+            left: 50% !important;
+            transform: translate(-50%, -50%) !important;
+            width: 20px !important;
+            height: 20px !important;
+            border: 3px solid rgba(255, 255, 255, 0.3) !important;
+            border-top-color: #ffffff !important;
+            border-radius: 50% !important;
+            animation: spin 0.8s linear infinite !important;
+        }
+
+        @keyframes spin {
+            to {
+                transform: translate(-50%, -50%) rotate(360deg);
+            }
+        }
+
+        /* Button Group */
+        .button-group {
+            display: flex !important;
+            gap: 12px !important;
+            align-items: center !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+
+        .back-btn {
+            background: #ffffff !important;
+            color: #666 !important;
+            border: 2px solid #e0e0e0 !important;
+            padding: 14px 24px !important;
+            font-size: 15px !important;
+            font-weight: 600 !important;
+            border-radius: 10px !important;
+            cursor: pointer !important;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+            display: flex !important;
+            align-items: center !important;
+            gap: 6px !important;
+            white-space: nowrap !important;
+            margin: 0 !important;
+            line-height: 1.5 !important;
+            text-decoration: none !important;
+            box-shadow: none !important;
+            height: auto !important;
+            min-height: 52px !important;
+        }
+
+        .back-btn:hover {
+            border-color: #791F1F !important;
+            color: #791F1F !important;
+            background: rgba(121, 31, 31, 0.05) !important;
+        }
+
+        .back-btn:focus {
+            border-color: #791F1F !important;
+            color: #791F1F !important;
+            background: rgba(121, 31, 31, 0.05) !important;
+        }
+
+        .back-btn svg {
+            transition: transform 0.3s ease !important;
+            flex-shrink: 0 !important;
+        }
+
+        .back-btn:hover svg {
+            transform: translateX(-4px) !important;
+        }
+
+        .button-group .submit-btn {
+            flex: 1 !important;
+        }
+
+        /* Responsive */
+        @media (max-width: 576px) {
+            .modal-container {
+                padding: 40px 24px 32px !important;
+                border-radius: 16px !important;
+            }
+
+            .form-title {
+                font-size: 24px !important;
+            }
+
+            .modal-close {
+                top: 16px !important;
+                right: 16px !important;
+            }
+
+            .step-header {
+                margin-bottom: 28px !important;
+            }
+
+            .form-fields {
+                gap: 20px !important;
+                margin-bottom: 28px !important;
+            }
+
+            .button-group {
+                flex-direction: column-reverse !important;
+                gap: 12px !important;
+            }
+
+            .back-btn {
+                width: 100% !important;
+                justify-content: center !important;
+            }
+
+            .button-group .submit-btn {
+                width: 100% !important;
+            }
+        }
+    </style>
+
+<script>
+    // Get elements
+    const modal = document.getElementById('leadFormModal');
+    const form = document.getElementById('leadForm');
+    const closeBtn = document.getElementById('closeModal');
+    const continueBtn = document.getElementById('continueBtn');
+    const backBtn = document.getElementById('backBtn');
+    const submitBtn = document.getElementById('submitBtn');
+
+    const step1 = document.getElementById('step1');
+    const step2 = document.getElementById('step2');
+    const progressDots = document.querySelectorAll('.dot');
+
+    let currentStep = 1;
+
+    // Close modal
+    closeBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) closeModal();
+    });
+
+    document.querySelector('.modal-container').addEventListener('click', function(e) {
+        e.stopPropagation();
+    });
+
+    function openModal() {
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+        resetForm();
+    }
+
+    function closeModal() {
+        modal.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    // base.js calls this after opening the modal
+    function resetForm() {
+        currentStep = 1;
+        step1.classList.add('active');
+        step2.classList.remove('active');
+        updateProgressDots();
+        clearAllErrors();
+        form.reset();
+    }
+
+    // Step 1 → Step 2
+    continueBtn.addEventListener('click', function() {
+        clearAllErrors();
+
+        const full_name = document.getElementById('full_name').value.trim();
+        const email = document.getElementById('email').value.trim();
+        let isValid = true;
+
+        if (!full_name) {
+            showError('full_name', 'Full name is required');
+            isValid = false;
+        }
+        if (!email) {
+            showError('email', 'Email is required');
+            isValid = false;
+        } else if (!validateEmail(email)) {
+            showError('email', 'Please enter a valid email');
+            isValid = false;
+        }
+
+        if (isValid) goToStep(2);
+    });
+
+    // Step 2 → Step 1
+    backBtn.addEventListener('click', function() {
+        goToStep(1);
+    });
+
+    // Validate Step 2 before base.js takes over the submit
+    submitBtn.addEventListener('click', function(e) {
+        clearAllErrors();
+
+        const phone = document.getElementById('phone').value.trim();
+        const city = document.getElementById('city').value.trim();
+        let isValid = true;
+
+        if (!phone) {
+            showError('phone', 'Phone number is required');
+            isValid = false;
+        } else if (!validateIndianPhone(phone)) {
+            showError('phone', 'Please enter a valid 10-digit Indian mobile number');
+            isValid = false;
+        }
+        if (!city) {
+            showError('city', 'City is required');
+            isValid = false;
+        }
+
+        if (!isValid) e.preventDefault();
+    });
+
+    function goToStep(stepNumber) {
+        if (stepNumber === 2) {
+            step1.classList.add('slide-out-left');
+            setTimeout(() => {
+                step1.classList.remove('active', 'slide-out-left');
+                step2.classList.add('active');
+                currentStep = 2;
+                updateProgressDots();
+            }, 400);
+        } else {
+            step2.classList.remove('active');
+            step1.classList.add('active', 'slide-in-left');
+            setTimeout(() => { step1.classList.remove('slide-in-left'); }, 500);
+            currentStep = 1;
+            updateProgressDots();
+        }
+    }
+
+    function updateProgressDots() {
+        progressDots.forEach((dot, index) => {
+            dot.classList.toggle('active', index + 1 <= currentStep);
+        });
+    }
+
+    // Phone: digits only
+    document.getElementById('phone').addEventListener('input', function(e) {
+        e.target.value = e.target.value.replace(/\D/g, '');
+    });
+
+    function validateEmail(email) {
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    }
+
+    function validateIndianPhone(phone) {
+        return /^[6-9]\d{9}$/.test(phone);
+    }
+
+    function showError(fieldId, message) {
+        const input = document.getElementById(fieldId);
+        const error = document.getElementById(fieldId + 'Error');
+        input.classList.add('error');
+        error.textContent = message;
+        error.classList.add('show');
+        if (!document.querySelector('.form-input.error:focus')) input.focus();
+    }
+
+    function clearError(fieldId) {
+        const input = document.getElementById(fieldId);
+        const error = document.getElementById(fieldId + 'Error');
+        input.classList.remove('error');
+        error.classList.remove('show');
+    }
+
+    function clearAllErrors() {
+        ['full_name', 'email', 'phone', 'city'].forEach(clearError);
+    }
+
+    // ESC closes modal
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && modal.classList.contains('active')) closeModal();
+    });
+
+    // Enter on Step 1 continues
+    step1.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') { e.preventDefault(); continueBtn.click(); }
+    });
+</script>
