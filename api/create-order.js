@@ -46,20 +46,25 @@ module.exports = async function handler(req, res) {
     return res.status(400).json({ error: "Invalid product" });
   }
 
-  // Sanitise customer fields
   const sanitise = (val) =>
     typeof val === "string" ? val.replace(/<[^>]*>/g, "").slice(0, 200) : "";
 
-  const c = {
-    first_name: sanitise(customer.first_name),
-    last_name: sanitise(customer.last_name),
-    email: sanitise(customer.email),
-    phone: sanitise(customer.phone).replace(/\D/g, "").slice(0, 10),
-    dob: sanitise(customer.dob),
-    gender: sanitise(customer.gender),
-  };
+  // Sanitise all incoming customer fields dynamically
+  const c = {};
+  Object.keys(customer).forEach((key) => {
+    const val = sanitise(customer[key]);
+    if (key === "phone") {
+      c.phone = val.replace(/\D/g, "").slice(0, 10);
+    } else if (val) {
+      c[key] = val;
+    }
+  });
 
-  const fullName = [c.first_name, c.last_name].filter(Boolean).join(" ");
+  // Compose display name: full_name wins, else join first_name + last_name
+  const fullName =
+    c.full_name ||
+    [c.first_name, c.last_name].filter(Boolean).join(" ") ||
+    "";
 
   let order;
   try {
@@ -67,21 +72,30 @@ module.exports = async function handler(req, res) {
       amount: product.amount,
       currency: product.currency,
       receipt: `rcpt_${Date.now()}`,
-      notes: {
-        // Product info (thankyou_path + pabbly_webhook looked up from catalog at runtime)
-        product_id,
-        product_name: product.name,
-        // Customer info
-        customer_name: fullName,
-        customer_email: c.email,
-        customer_phone: c.phone,
-        customer_dob: c.dob,
-        customer_gender: c.gender,
-        // UTMs packed as one string to stay under 15-key notes limit
-        ...(utm_params && typeof utm_params === "string"
-          ? { utm_params: utm_params.replace(/<[^>]*>/g, "").slice(0, 500) }
-          : {}),
-      },
+      notes: (function () {
+        const n = {
+          product_id,
+          product_name: product.name,
+          customer_name: fullName,
+          customer_email: c.email || "",
+          customer_phone: c.phone || "",
+        };
+
+        // Store extra customer fields as customer_<fieldname>
+        // Skip fields already stored above and name-composition fields
+        const skip = new Set(["email", "phone", "full_name", "first_name", "last_name"]);
+        Object.keys(c).forEach((key) => {
+          if (!skip.has(key) && c[key] && Object.keys(n).length < 14) {
+            n["customer_" + key] = c[key];
+          }
+        });
+
+        if (utm_params && typeof utm_params === "string" && Object.keys(n).length < 15) {
+          n.utm_params = utm_params.replace(/<[^>]*>/g, "").slice(0, 500);
+        }
+
+        return n;
+      })(),
     });
   } catch (err) {
     console.error("[create-order] Razorpay error:", err?.error || err);
