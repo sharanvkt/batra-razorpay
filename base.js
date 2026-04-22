@@ -117,19 +117,16 @@
       var hasErrors = form.querySelector(".error-message.show");
       if (hasErrors) return;
 
-      // Collect customer data from the form
-      var customer = {
-        first_name: getVal("firstName"),
-        last_name:  getVal("lastName"),
-        email:      getVal("email"),
-        phone:      getVal("phone"),
-        dob:        getVal("dob"),
-        gender:     getVal("gender"),
-      };
+      // Collect all named inputs from the form — field-agnostic
+      var inputs = form.querySelectorAll("input[name], select[name], textarea[name]");
+      var customer = {};
+      inputs.forEach(function (el) {
+        if (el.value.trim()) customer[el.name] = el.value.trim();
+      });
 
-      // Validate required customer fields exist
-      if (!customer.first_name || !customer.email || !customer.phone) {
-        console.error("[rzp] Missing required customer fields");
+      // email and phone are always required (needed for Razorpay prefill)
+      if (!customer.email || !customer.phone) {
+        console.error("[rzp] Missing required customer fields (email, phone)");
         return;
       }
 
