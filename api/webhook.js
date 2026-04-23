@@ -94,12 +94,18 @@ module.exports = async function handler(req, res) {
         customer_name:  notes.customer_name  || notes.full_name || "",
         customer_email: notes.customer_email || notes.email     || "",
         customer_phone: notes.customer_phone || notes.phone     || "",
-        customer_dob: notes.customer_dob || "",
-        customer_gender: notes.customer_gender || "",
 
         timestamp: new Date().toISOString(),
         event_id: eventId,
       };
+
+      // Forward all extra customer_* note keys to Pabbly (e.g. customer_city, customer_dob)
+      const skipKeys = new Set(["customer_name", "customer_email", "customer_phone"]);
+      Object.keys(notes).forEach((key) => {
+        if (key.startsWith("customer_") && !skipKeys.has(key) && notes[key]) {
+          payload[key] = notes[key];
+        }
+      });
 
       // Unpack UTMs from notes into individual Pabbly fields
       if (notes.utm_params) {
@@ -116,7 +122,7 @@ module.exports = async function handler(req, res) {
       const product = getProduct(notes.product_id);
       const pabblyUrl = product?.pabbly_webhook || "";
 
-      if (pabblyUrl && pabblyUrl.startsWith("https://")) {
+      if (pabblyUrl && pabblyUrl.startsWith("https://connect.pabbly.com/")) {
         console.log(`[webhook] Firing Pabbly for product: ${notes.product_id}`);
         await firePabbly(pabblyUrl, payload);
       } else {

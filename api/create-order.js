@@ -91,7 +91,7 @@ module.exports = async function handler(req, res) {
         });
 
         if (utm_params && typeof utm_params === "string" && Object.keys(n).length < 15) {
-          n.utm_params = utm_params.replace(/<[^>]*>/g, "").slice(0, 500);
+          n.utm_params = utm_params.replace(/<[^>]*>/g, "").slice(0, 256);
         }
 
         return n;
