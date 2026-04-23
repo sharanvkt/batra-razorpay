@@ -90,9 +90,10 @@ module.exports = async function handler(req, res) {
         product_name: notes.product_name || "",
 
         // Customer (from form via notes)
-        customer_name: notes.customer_name || "",
-        customer_email: notes.customer_email || "",
-        customer_phone: notes.customer_phone || "",
+        // Fallback to flat keys for payments made via old Razorpay payment page
+        customer_name:  notes.customer_name  || notes.full_name || "",
+        customer_email: notes.customer_email || notes.email     || "",
+        customer_phone: notes.customer_phone || notes.phone     || "",
         customer_dob: notes.customer_dob || "",
         customer_gender: notes.customer_gender || "",
 
@@ -134,14 +135,14 @@ module.exports = async function handler(req, res) {
       }
 
       // Meta CAPI Purchase — server-authoritative, deduplicated via purch-{order_id}
-      const nameParts = (notes.customer_name || "").trim().split(" ");
+      const nameParts = (notes.customer_name || notes.full_name || "").trim().split(" ");
       await sendCapiEvent({
         event_name: "Purchase",
         event_id: "purch-" + payload.order_id,
         event_source_url: "https://thebatraanumerology.org/",
         user_data: {
-          email:      notes.customer_email  || undefined,
-          phone:      notes.customer_phone  || undefined,
+          email:      notes.customer_email || notes.email || undefined,
+          phone:      notes.customer_phone || notes.phone || undefined,
           first_name: nameParts[0]          || undefined,
           last_name:  nameParts.slice(1).join(" ") || undefined,
           dob:        notes.customer_dob    || undefined,
