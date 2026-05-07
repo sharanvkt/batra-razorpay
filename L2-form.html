@@ -1,0 +1,908 @@
+<!-- ============================================================
+     L2 Payment Form — inline, self-contained, paste into Elementor
+     Replace PRODUCT_ID_HERE with the real product_id from catalog.js
+     ============================================================ -->
+
+<div class="l2-wrapper">
+  <div class="l2-card">
+
+    <!-- Header -->
+    <div class="l2-header">
+      <div class="l2-price-badge">₹5,999</div>
+      <h2 class="l2-title">Wealth Mastery through Mobile Numerology</h2>
+      <p class="l2-subtitle">Mobile Golden Package + Software — TBNL</p>
+    </div>
+
+    <!-- Error banner (hidden by default) -->
+    <div class="l2-error-banner" id="l2ErrorBanner" role="alert"></div>
+
+    <!-- Form -->
+    <form id="l2Form" novalidate>
+
+      <!-- Row 1: Full Name + Email -->
+      <div class="l2-row l2-2col">
+
+        <div class="l2-field">
+          <label class="l2-label" for="l2_full_name">
+            Full Name <span class="l2-req">*</span>
+          </label>
+          <input
+            type="text"
+            id="l2_full_name"
+            name="full_name"
+            class="l2-input"
+            placeholder="Enter your full name"
+            autocomplete="name"
+            maxlength="200"
+          >
+          <span class="l2-error" id="l2_full_nameError"></span>
+        </div>
+
+        <div class="l2-field">
+          <label class="l2-label" for="l2_email">
+            Email <span class="l2-req">*</span>
+          </label>
+          <input
+            type="email"
+            id="l2_email"
+            name="email"
+            class="l2-input"
+            placeholder="your.email@example.com"
+            autocomplete="email"
+            maxlength="200"
+          >
+          <span class="l2-error" id="l2_emailError"></span>
+        </div>
+
+      </div>
+
+      <!-- Row 2: Phone + City -->
+      <div class="l2-row l2-2col">
+
+        <div class="l2-field">
+          <label class="l2-label" for="l2_phone">
+            WhatsApp Number <span class="l2-req">*</span>
+          </label>
+          <div class="l2-phone-wrap">
+            <span class="l2-phone-prefix">IN +91</span>
+            <input
+              type="tel"
+              id="l2_phone"
+              name="phone"
+              class="l2-input l2-phone-input"
+              placeholder="9876543210"
+              autocomplete="tel"
+              maxlength="10"
+              inputmode="numeric"
+            >
+          </div>
+          <span class="l2-error" id="l2_phoneError"></span>
+        </div>
+
+        <div class="l2-field">
+          <label class="l2-label" for="l2_city">
+            City <span class="l2-req">*</span>
+          </label>
+          <input
+            type="text"
+            id="l2_city"
+            name="city"
+            class="l2-input"
+            placeholder="Enter your city"
+            autocomplete="address-level2"
+            maxlength="200"
+          >
+          <span class="l2-error" id="l2_cityError"></span>
+        </div>
+
+      </div>
+
+      <!-- Course Name -->
+      <div class="l2-row">
+        <div class="l2-field">
+          <label class="l2-label" for="l2_course_name">
+            Course Name <span class="l2-req">*</span>
+          </label>
+          <select
+            id="l2_course_name"
+            name="course_name"
+            class="l2-input l2-select"
+          >
+            <option value="">— Select Course —</option>
+            <option value="Mobile Numerology Golden Package">Mobile Numerology Golden Package</option>
+            <option value="Wealth Mastery Program">Wealth Mastery Program</option>
+            <option value="Mobile Numerology + Software Bundle">Mobile Numerology + Software Bundle</option>
+          </select>
+          <span class="l2-error" id="l2_course_nameError"></span>
+        </div>
+      </div>
+
+      <!-- Date of Birth -->
+      <div class="l2-row">
+        <div class="l2-field">
+          <label class="l2-label" for="l2_dob">
+            Date of Birth <span class="l2-req">*</span>
+          </label>
+          <input
+            type="date"
+            id="l2_dob"
+            name="dob"
+            class="l2-input l2-date"
+            max=""
+          >
+          <span class="l2-error" id="l2_dobError"></span>
+        </div>
+      </div>
+
+      <!-- Monthly Income Range -->
+      <div class="l2-row">
+        <div class="l2-field">
+          <label class="l2-label" for="l2_income_range">
+            Monthly Income Range <span class="l2-req">*</span>
+          </label>
+          <select
+            id="l2_income_range"
+            name="income_range"
+            class="l2-input l2-select"
+          >
+            <option value="">— Select Range —</option>
+            <option value="Below ₹25,000">Below ₹25,000</option>
+            <option value="₹25,000 – ₹50,000">₹25,000 – ₹50,000</option>
+            <option value="₹50,000 – ₹1,00,000">₹50,000 – ₹1,00,000</option>
+            <option value="₹1,00,000 – ₹2,00,000">₹1,00,000 – ₹2,00,000</option>
+            <option value="Above ₹2,00,000">Above ₹2,00,000</option>
+          </select>
+          <span class="l2-error" id="l2_income_rangeError"></span>
+        </div>
+      </div>
+
+      <!-- Profession and Pain Area -->
+      <div class="l2-row">
+        <div class="l2-field">
+          <label class="l2-label" for="l2_profession_pain">
+            Profession and Pain Area <span class="l2-req">*</span>
+          </label>
+          <input
+            type="text"
+            id="l2_profession_pain"
+            name="profession_pain"
+            class="l2-input"
+            placeholder="EX — Job · Health · Relationship"
+            maxlength="200"
+          >
+          <span class="l2-error" id="l2_profession_painError"></span>
+        </div>
+      </div>
+
+      <!-- Submit -->
+      <button type="submit" class="l2-pay-btn" id="l2SubmitBtn">
+        <span class="l2-btn-text">
+          <svg class="l2-lock-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+          </svg>
+          Pay ₹5,999 Securely
+        </span>
+        <span class="l2-btn-loader"></span>
+      </button>
+
+    </form>
+
+    <!-- Trust badges -->
+    <div class="l2-trust">
+      <div class="l2-trust-badges">
+        <!-- UPI -->
+        <svg class="l2-badge-svg" viewBox="0 0 60 24" xmlns="http://www.w3.org/2000/svg">
+          <text x="0" y="18" font-family="Arial" font-weight="700" font-size="16" fill="#5F259F">UPI</text>
+        </svg>
+        <!-- Visa -->
+        <svg class="l2-badge-svg" viewBox="0 0 60 24" xmlns="http://www.w3.org/2000/svg">
+          <text x="0" y="18" font-family="Arial" font-weight="700" font-size="15" fill="#1A1F71">VISA</text>
+        </svg>
+        <!-- Mastercard dots -->
+        <svg class="l2-badge-svg" viewBox="0 0 44 28" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="14" cy="14" r="12" fill="#EB001B"/>
+          <circle cx="30" cy="14" r="12" fill="#F79E1B"/>
+          <path d="M22 5.5a12 12 0 0 1 0 17A12 12 0 0 1 22 5.5z" fill="#FF5F00"/>
+        </svg>
+        <!-- RuPay -->
+        <svg class="l2-badge-svg" viewBox="0 0 72 24" xmlns="http://www.w3.org/2000/svg">
+          <text x="0" y="18" font-family="Arial" font-weight="700" font-size="14" fill="#2E8B57">RuPay</text>
+        </svg>
+      </div>
+      <p class="l2-trust-text">100% Secure &amp; Encrypted Payment</p>
+    </div>
+
+  </div>
+</div>
+
+<style>
+  /* ── Reset scoped to l2-wrapper ── */
+  .l2-wrapper *, .l2-wrapper *::before, .l2-wrapper *::after {
+    box-sizing: border-box !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* ── Outer wrapper ── */
+  .l2-wrapper {
+    width: 100% !important;
+    max-width: 620px !important;
+    margin: 0 auto !important;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  }
+
+  /* ── Card ── */
+  .l2-card {
+    background: #ffffff !important;
+    border-radius: 20px !important;
+    padding: 40px 40px 32px !important;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.08), 0 1px 4px rgba(0,0,0,0.06) !important;
+    border: 1px solid #f0f0f0 !important;
+  }
+
+  /* ── Header ── */
+  .l2-header {
+    text-align: center !important;
+    margin-bottom: 32px !important;
+    padding-bottom: 28px !important;
+    border-bottom: 1px solid #f0f0f0 !important;
+  }
+
+  .l2-price-badge {
+    display: inline-block !important;
+    background: linear-gradient(135deg, #791F1F 0%, #a02828 100%) !important;
+    color: #ffffff !important;
+    font-size: 22px !important;
+    font-weight: 700 !important;
+    padding: 8px 24px !important;
+    border-radius: 50px !important;
+    margin-bottom: 16px !important;
+    letter-spacing: 0.02em !important;
+    box-shadow: 0 4px 12px rgba(121,31,31,0.25) !important;
+  }
+
+  .l2-title {
+    font-size: 22px !important;
+    font-weight: 700 !important;
+    color: #1a1a1a !important;
+    line-height: 1.3 !important;
+    margin-bottom: 8px !important;
+    padding: 0 !important;
+    border: none !important;
+    text-align: center !important;
+  }
+
+  .l2-subtitle {
+    font-size: 14px !important;
+    color: #666 !important;
+    line-height: 1.5 !important;
+    font-weight: 400 !important;
+    text-align: center !important;
+  }
+
+  /* ── Error banner ── */
+  .l2-error-banner {
+    display: none !important;
+    background: #fef2f2 !important;
+    border: 1px solid #fecaca !important;
+    border-radius: 10px !important;
+    color: #dc2626 !important;
+    font-size: 14px !important;
+    padding: 12px 16px !important;
+    margin-bottom: 24px !important;
+    line-height: 1.5 !important;
+    text-align: center !important;
+  }
+
+  .l2-error-banner.l2-show {
+    display: block !important;
+  }
+
+  /* ── Form rows ── */
+  .l2-row {
+    margin-bottom: 20px !important;
+  }
+
+  .l2-2col {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 16px !important;
+  }
+
+  /* ── Field ── */
+  .l2-field {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 6px !important;
+  }
+
+  .l2-label {
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    color: #333 !important;
+    line-height: 1.4 !important;
+    display: block !important;
+  }
+
+  .l2-req {
+    color: #791F1F !important;
+  }
+
+  /* ── Inputs ── */
+  .l2-input {
+    padding: 12px 14px !important;
+    font-size: 15px !important;
+    color: #333 !important;
+    background: #ffffff !important;
+    border: 2px solid #e0e0e0 !important;
+    border-radius: 10px !important;
+    width: 100% !important;
+    font-family: inherit !important;
+    line-height: 1.5 !important;
+    font-weight: 400 !important;
+    transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.2s ease !important;
+    outline: none !important;
+    height: auto !important;
+    -webkit-appearance: none !important;
+    appearance: none !important;
+  }
+
+  .l2-input:focus {
+    border-color: #791F1F !important;
+    box-shadow: 0 0 0 4px rgba(121,31,31,0.08) !important;
+    transform: translateY(-1px) !important;
+    outline: none !important;
+  }
+
+  .l2-input::placeholder {
+    color: #aaa !important;
+    opacity: 1 !important;
+  }
+
+  .l2-input.l2-input-error {
+    border-color: #dc2626 !important;
+    animation: l2Shake 0.4s ease !important;
+  }
+
+  /* ── Phone field ── */
+  .l2-phone-wrap {
+    display: flex !important;
+    align-items: stretch !important;
+    border: 2px solid #e0e0e0 !important;
+    border-radius: 10px !important;
+    overflow: hidden !important;
+    transition: border-color 0.25s ease, box-shadow 0.25s ease !important;
+  }
+
+  .l2-phone-wrap:focus-within {
+    border-color: #791F1F !important;
+    box-shadow: 0 0 0 4px rgba(121,31,31,0.08) !important;
+  }
+
+  .l2-phone-wrap.l2-input-error {
+    border-color: #dc2626 !important;
+    animation: l2Shake 0.4s ease !important;
+  }
+
+  .l2-phone-prefix {
+    display: flex !important;
+    align-items: center !important;
+    padding: 0 12px !important;
+    background: #f7f7f7 !important;
+    border-right: 1px solid #e0e0e0 !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    color: #555 !important;
+    white-space: nowrap !important;
+    flex-shrink: 0 !important;
+  }
+
+  .l2-phone-input {
+    border: none !important;
+    border-radius: 0 !important;
+    flex: 1 !important;
+    min-width: 0 !important;
+    box-shadow: none !important;
+  }
+
+  .l2-phone-input:focus {
+    border-color: transparent !important;
+    box-shadow: none !important;
+    transform: none !important;
+  }
+
+  /* ── Select ── */
+  .l2-select {
+    background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L6 6L11 1' stroke='%23666' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E") !important;
+    background-repeat: no-repeat !important;
+    background-position: right 14px center !important;
+    padding-right: 40px !important;
+    cursor: pointer !important;
+    color: #333 !important;
+  }
+
+  .l2-select option[value=""] {
+    color: #aaa !important;
+  }
+
+  /* ── Date input ── */
+  .l2-date {
+    cursor: pointer !important;
+    color: #333 !important;
+  }
+
+  .l2-date::-webkit-calendar-picker-indicator {
+    opacity: 0.5 !important;
+    cursor: pointer !important;
+  }
+
+  /* ── Inline error ── */
+  .l2-error {
+    font-size: 12px !important;
+    color: #dc2626 !important;
+    display: none !important;
+    line-height: 1.4 !important;
+    padding-left: 2px !important;
+  }
+
+  .l2-error.l2-show {
+    display: block !important;
+    animation: l2Shake 0.4s ease !important;
+  }
+
+  @keyframes l2Shake {
+    0%, 100% { transform: translateX(0); }
+    25%       { transform: translateX(-6px); }
+    75%       { transform: translateX(6px); }
+  }
+
+  /* ── Submit button ── */
+  .l2-pay-btn {
+    width: 100% !important;
+    margin-top: 8px !important;
+    padding: 16px 32px !important;
+    background: #FF8B00 !important;
+    background-image: linear-gradient(135deg, #FF8B00 0%, #ffaa33 100%) !important;
+    color: #ffffff !important;
+    font-size: 17px !important;
+    font-weight: 700 !important;
+    font-family: inherit !important;
+    border: none !important;
+    border-radius: 12px !important;
+    cursor: pointer !important;
+    position: relative !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    min-height: 56px !important;
+    height: auto !important;
+    line-height: 1.4 !important;
+    box-shadow: 0 4px 16px rgba(255,139,0,0.3) !important;
+    transition: transform 0.25s ease, box-shadow 0.25s ease !important;
+    text-decoration: none !important;
+    letter-spacing: 0.01em !important;
+  }
+
+  .l2-pay-btn:hover:not(:disabled) {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 8px 24px rgba(255,139,0,0.35) !important;
+    background: #FF8B00 !important;
+    background-image: linear-gradient(135deg, #FF8B00 0%, #ffaa33 100%) !important;
+    color: #ffffff !important;
+  }
+
+  .l2-pay-btn:active:not(:disabled) {
+    transform: translateY(0) !important;
+  }
+
+  .l2-pay-btn:disabled,
+  .l2-pay-btn.l2-loading {
+    pointer-events: none !important;
+    opacity: 0.85 !important;
+  }
+
+  .l2-pay-btn.l2-loading .l2-btn-text {
+    opacity: 0 !important;
+  }
+
+  .l2-btn-text {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    transition: opacity 0.2s ease !important;
+  }
+
+  .l2-lock-icon {
+    flex-shrink: 0 !important;
+  }
+
+  .l2-btn-loader {
+    display: none !important;
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    width: 22px !important;
+    height: 22px !important;
+    border: 3px solid rgba(255,255,255,0.35) !important;
+    border-top-color: #ffffff !important;
+    border-radius: 50% !important;
+    animation: l2Spin 0.7s linear infinite !important;
+  }
+
+  .l2-pay-btn.l2-loading .l2-btn-loader {
+    display: block !important;
+  }
+
+  @keyframes l2Spin {
+    to { transform: translate(-50%, -50%) rotate(360deg); }
+  }
+
+  /* ── Trust badges ── */
+  .l2-trust {
+    margin-top: 24px !important;
+    padding-top: 20px !important;
+    border-top: 1px solid #f0f0f0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 10px !important;
+  }
+
+  .l2-trust-badges {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 20px !important;
+    flex-wrap: wrap !important;
+  }
+
+  .l2-badge-svg {
+    height: 22px !important;
+    width: auto !important;
+    opacity: 0.75 !important;
+    flex-shrink: 0 !important;
+  }
+
+  .l2-trust-text {
+    font-size: 12px !important;
+    color: #999 !important;
+    text-align: center !important;
+    line-height: 1.4 !important;
+  }
+
+  /* ── Mobile ── */
+  @media (max-width: 560px) {
+    .l2-card {
+      padding: 28px 20px 24px !important;
+      border-radius: 16px !important;
+    }
+
+    .l2-2col {
+      grid-template-columns: 1fr !important;
+      gap: 20px !important;
+    }
+
+    .l2-title {
+      font-size: 19px !important;
+    }
+
+    .l2-price-badge {
+      font-size: 20px !important;
+    }
+
+    .l2-pay-btn {
+      font-size: 16px !important;
+    }
+  }
+</style>
+
+<script>
+(function () {
+  'use strict';
+
+  var API_BASE = 'https://batra-razorpay.vercel.app';
+  var PRODUCT_ID = 'PRODUCT_ID_HERE'; // ← replace after adding to catalog.js
+
+  var form        = document.getElementById('l2Form');
+  var submitBtn   = document.getElementById('l2SubmitBtn');
+  var errorBanner = document.getElementById('l2ErrorBanner');
+
+  // ── Set max DOB to today ──────────────────────────────────────────
+  var dobInput = document.getElementById('l2_dob');
+  if (dobInput) {
+    dobInput.setAttribute('max', new Date().toISOString().split('T')[0]);
+  }
+
+  // ── Phone: digits only ───────────────────────────────────────────
+  document.getElementById('l2_phone').addEventListener('input', function (e) {
+    e.target.value = e.target.value.replace(/\D/g, '').slice(0, 10);
+  });
+
+  // ── Clear error on input/change ──────────────────────────────────
+  ['l2_full_name', 'l2_email', 'l2_phone', 'l2_city',
+   'l2_course_name', 'l2_dob', 'l2_income_range', 'l2_profession_pain'
+  ].forEach(function (id) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    el.addEventListener(el.tagName === 'SELECT' ? 'change' : 'input', function () {
+      clearFieldError(id.replace('l2_', ''));
+    });
+  });
+
+  // ── Validation helpers ───────────────────────────────────────────
+  function validateEmail(val) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(val);
+  }
+
+  function validateIndianPhone(val) {
+    return /^[6-9]\d{9}$/.test(val);
+  }
+
+  function showFieldError(fieldName, msg) {
+    var inputId = 'l2_' + fieldName;
+    var errorId = inputId + 'Error';
+    var input   = document.getElementById(inputId);
+    var errEl   = document.getElementById(errorId);
+
+    if (input) {
+      if (input.closest && input.closest('.l2-phone-wrap')) {
+        input.closest('.l2-phone-wrap').classList.add('l2-input-error');
+      } else {
+        input.classList.add('l2-input-error');
+      }
+    }
+
+    if (errEl) {
+      errEl.textContent = msg;
+      errEl.classList.add('l2-show');
+    }
+  }
+
+  function clearFieldError(fieldName) {
+    var inputId = 'l2_' + fieldName;
+    var errorId = inputId + 'Error';
+    var input   = document.getElementById(inputId);
+    var errEl   = document.getElementById(errorId);
+
+    if (input) {
+      if (input.closest && input.closest('.l2-phone-wrap')) {
+        input.closest('.l2-phone-wrap').classList.remove('l2-input-error');
+      } else {
+        input.classList.remove('l2-input-error');
+      }
+    }
+    if (errEl) {
+      errEl.textContent = '';
+      errEl.classList.remove('l2-show');
+    }
+  }
+
+  function clearAllErrors() {
+    ['full_name', 'email', 'phone', 'city',
+     'course_name', 'dob', 'income_range', 'profession_pain'
+    ].forEach(clearFieldError);
+    hideBannerError();
+  }
+
+  function showBannerError(msg) {
+    errorBanner.textContent = msg;
+    errorBanner.classList.add('l2-show');
+    errorBanner.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  function hideBannerError() {
+    errorBanner.textContent = '';
+    errorBanner.classList.remove('l2-show');
+  }
+
+  // ── Set loading state ────────────────────────────────────────────
+  function setLoading(on) {
+    if (on) {
+      submitBtn.classList.add('l2-loading');
+      submitBtn.setAttribute('disabled', 'disabled');
+    } else {
+      submitBtn.classList.remove('l2-loading');
+      submitBtn.removeAttribute('disabled');
+    }
+  }
+
+  // ── Capture UTM params ───────────────────────────────────────────
+  function getUtmParams() {
+    try {
+      var params = new URLSearchParams(window.location.search);
+      var utmKeys = ['utm_source','utm_medium','utm_campaign','utm_content','utm_term'];
+      var parts = [];
+      utmKeys.forEach(function (k) {
+        if (params.get(k)) parts.push(k + '=' + encodeURIComponent(params.get(k)));
+      });
+      return parts.join('&').slice(0, 256);
+    } catch (e) {
+      return '';
+    }
+  }
+
+  // ── Load Razorpay script ─────────────────────────────────────────
+  function loadRazorpay() {
+    return new Promise(function (resolve, reject) {
+      if (window.Razorpay) { resolve(); return; }
+      var s = document.createElement('script');
+      s.src = 'https://checkout.razorpay.com/v1/checkout.js';
+      s.onload = resolve;
+      s.onerror = function () { reject(new Error('Could not load payment gateway. Please refresh and try again.')); };
+      document.head.appendChild(s);
+    });
+  }
+
+  // ── Form submit ──────────────────────────────────────────────────
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    clearAllErrors();
+
+    // Collect values
+    var full_name       = document.getElementById('l2_full_name').value.trim();
+    var email           = document.getElementById('l2_email').value.trim();
+    var phone           = document.getElementById('l2_phone').value.trim();
+    var city            = document.getElementById('l2_city').value.trim();
+    var course_name     = document.getElementById('l2_course_name').value;
+    var dob             = document.getElementById('l2_dob').value;
+    var income_range    = document.getElementById('l2_income_range').value;
+    var profession_pain = document.getElementById('l2_profession_pain').value.trim();
+
+    // Validate
+    var valid = true;
+
+    if (!full_name) {
+      showFieldError('full_name', 'Full name is required');
+      valid = false;
+    }
+
+    if (!email) {
+      showFieldError('email', 'Email is required');
+      valid = false;
+    } else if (!validateEmail(email)) {
+      showFieldError('email', 'Please enter a valid email address');
+      valid = false;
+    }
+
+    if (!phone) {
+      showFieldError('phone', 'WhatsApp number is required');
+      valid = false;
+    } else if (!validateIndianPhone(phone)) {
+      showFieldError('phone', 'Enter a valid 10-digit Indian mobile number');
+      valid = false;
+    }
+
+    if (!city) {
+      showFieldError('city', 'City is required');
+      valid = false;
+    }
+
+    if (!course_name) {
+      showFieldError('course_name', 'Please select a course');
+      valid = false;
+    }
+
+    if (!dob) {
+      showFieldError('dob', 'Date of birth is required');
+      valid = false;
+    }
+
+    if (!income_range) {
+      showFieldError('income_range', 'Please select your monthly income range');
+      valid = false;
+    }
+
+    if (!profession_pain) {
+      showFieldError('profession_pain', 'Please enter your profession and pain area');
+      valid = false;
+    }
+
+    if (!valid) {
+      // Scroll to first error
+      var firstError = form.querySelector('.l2-input-error, .l2-phone-wrap.l2-input-error');
+      if (firstError) firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+
+    // All valid — proceed to payment
+    setLoading(true);
+    hideBannerError();
+
+    var customer = {
+      full_name:       full_name,
+      email:           email,
+      phone:           phone,
+      city:            city,
+      course_name:     course_name,
+      dob:             dob,
+      income_range:    income_range,
+      profession_pain: profession_pain
+    };
+
+    var payload = {
+      product_id:  PRODUCT_ID,
+      customer:    customer,
+      utm_params:  getUtmParams()
+    };
+
+    // Step 1: create order
+    fetch(API_BASE + '/api/create-order', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify(payload)
+    })
+    .then(function (res) {
+      if (!res.ok) return res.json().then(function (d) { throw new Error(d.error || 'Order creation failed'); });
+      return res.json();
+    })
+    .then(function (data) {
+      // Step 2: load Razorpay and open popup
+      return loadRazorpay().then(function () { return data; });
+    })
+    .then(function (data) {
+      var options = {
+        key:         data.key_id,
+        amount:      data.amount,
+        currency:    data.currency,
+        name:        'The Batraa Numerology',
+        description: data.description || data.product_name,
+        order_id:    data.order_id,
+        prefill: {
+          name:    data.customer.name,
+          email:   data.customer.email,
+          contact: data.customer.contact
+        },
+        theme: { color: '#791F1F' },
+        modal: {
+          ondismiss: function () {
+            setLoading(false);
+          }
+        },
+        handler: function (response) {
+          // Step 3: verify payment
+          fetch(API_BASE + '/api/verify-payment', {
+            method:  'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_order_id:   response.razorpay_order_id,
+              razorpay_signature:  response.razorpay_signature
+            })
+          })
+          .then(function (res) {
+            if (!res.ok) return res.json().then(function (d) { throw new Error(d.error || 'Verification failed'); });
+            return res.json();
+          })
+          .then(function (verifyData) {
+            if (verifyData.redirect_url) {
+              window.location.href = verifyData.redirect_url;
+            } else {
+              throw new Error('Payment verified but redirect URL missing. Please contact support.');
+            }
+          })
+          .catch(function (err) {
+            setLoading(false);
+            showBannerError(err.message || 'Payment verification failed. Please contact support.');
+          });
+        }
+      };
+
+      var rzp = new window.Razorpay(options);
+
+      rzp.on('payment.failed', function () {
+        setLoading(false);
+      });
+
+      rzp.open();
+    })
+    .catch(function (err) {
+      setLoading(false);
+      showBannerError(err.message || 'Something went wrong. Please try again.');
+    });
+  });
+
+}());
+</script>
