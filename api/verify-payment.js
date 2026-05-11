@@ -99,7 +99,9 @@ module.exports = async function handler(req, res) {
     }
   });
 
-  const redirectUrl = `${origin}${thankyouPath}?${params.toString()}`;
+  const isFullUrl = /^https?:\/\//i.test(thankyouPath);
+  const base = isFullUrl ? thankyouPath : `${origin}${thankyouPath}`;
+  const redirectUrl = `${base}?${params.toString()}`;
 
   console.log("[verify-payment] Verified, redirecting:", razorpay_order_id);
 
