@@ -1,868 +1,1251 @@
 <!-- ============================================================
-     L2 Payment Form — inline, self-contained, paste into Elementor
-     Replace PRODUCT_ID_HERE with the real product_id from catalog.js
+     L2 Payment Form — v5
+     3-box layout · Attention engineered · 2-step form
      ============================================================ -->
 
-<div class="l2-wrapper">
-  <div class="l2-card">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Spectral:wght@400;600&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
 
-    <!-- Header -->
-    <div class="l2-header">
-      <div class="l2-price-badge">₹5,999</div>
-      <h2 class="l2-title">Wealth Mastery through Mobile Numerology</h2>
-      <p class="l2-subtitle">Mobile Golden Package + Software — TBNL</p>
+<div class="f-page">
+
+  <!-- ══════════════════════════════
+       ACCENT STRIP
+  ══════════════════════════════ -->
+  <div class="f-strip">
+    <div class="f-proof-row">
+      <span class="f-proof-dot"></span>
+      <span class="f-proof-msg" id="fProofMsg">Swati from Delhi joined 2 minutes ago</span>
+    </div>
+    <div class="f-prog-wrap">
+      <div class="f-prog-track">
+        <div class="f-prog-fill" id="fProgFill"></div>
+      </div>
+      <span class="f-prog-label" id="fProgLabel">16 of 20 spots taken</span>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════
+       BOX 1 — Identity
+  ══════════════════════════════ -->
+  <div class="f-box f-box--identity">
+    <div class="f-brand">
+      The Batraa Numerology
     </div>
 
-    <!-- Error banner (hidden by default) -->
-    <div class="l2-error-banner" id="l2ErrorBanner" role="alert"></div>
-
-    <!-- Form -->
-    <form id="l2Form" novalidate>
-
-      <!-- Row 1: Full Name + Email -->
-      <div class="l2-row l2-2col">
-
-        <div class="l2-field">
-          <label class="l2-label" for="l2_full_name">
-            Full Name <span class="l2-req">*</span>
-          </label>
-          <input
-            type="text"
-            id="l2_full_name"
-            name="full_name"
-            class="l2-input"
-            placeholder="Enter your full name"
-            autocomplete="name"
-            maxlength="200"
-          >
-          <span class="l2-error" id="l2_full_nameError"></span>
-        </div>
-
-        <div class="l2-field">
-          <label class="l2-label" for="l2_email">
-            Email <span class="l2-req">*</span>
-          </label>
-          <input
-            type="email"
-            id="l2_email"
-            name="email"
-            class="l2-input"
-            placeholder="your.email@example.com"
-            autocomplete="email"
-            maxlength="200"
-          >
-          <span class="l2-error" id="l2_emailError"></span>
-        </div>
-
+    <div class="f-identity-body">
+      <div class="f-title-col">
+        <p class="f-product">Wealth Mastery through Mobile Numerology</p>
+        <p class="f-subproduct">Mobile Golden Package + Software — TBNL</p>
       </div>
+      <div class="f-price-col">
+        <span class="f-price">₹5,999</span>
+        <span class="f-price-was">₹50,999</span>
+        <span class="f-price-save">Save ₹45,000</span>
+      </div>
+    </div>
 
-      <!-- Row 2: Phone + City -->
-      <div class="l2-row l2-2col">
+    <div class="f-urgency">
+      <span class="f-urgency-dot"></span>
+      <span id="fUrgencyText">4 spots remaining in this cohort</span>
+    </div>
+  </div>
 
-        <div class="l2-field">
-          <label class="l2-label" for="l2_phone">
-            WhatsApp Number <span class="l2-req">*</span>
-          </label>
-          <div class="l2-phone-wrap">
-            <span class="l2-phone-prefix">IN +91</span>
-            <input
-              type="tel"
-              id="l2_phone"
-              name="phone"
-              class="l2-input l2-phone-input"
-              placeholder="9876543210"
-              autocomplete="tel"
-              maxlength="10"
-              inputmode="numeric"
-            >
+  <!-- ══════════════════════════════
+       BOX 2 — Form (primary)
+  ══════════════════════════════ -->
+  <div class="f-box f-box--form">
+
+    <!-- Stepper -->
+    <div class="f-stepper">
+      <div class="f-step-pill f-step-pill--active" id="fPill1">
+        <span class="f-pill-num">1</span>
+        <span class="f-pill-lbl">Your details</span>
+      </div>
+      <div class="f-step-track">
+        <div class="f-step-fill" id="fStepFill"></div>
+      </div>
+      <div class="f-step-pill" id="fPill2">
+        <span class="f-pill-num">2</span>
+        <span class="f-pill-lbl">Your situation</span>
+      </div>
+    </div>
+
+    <!-- Error banner -->
+    <div class="f-err-banner" id="fErrBanner" role="alert"></div>
+
+    <!-- STEP 1 -->
+    <div class="f-step" id="fStep1">
+      <div class="f-grid">
+
+        <div class="f-field">
+          <label class="f-label" for="f_name">Full Name <span class="f-req">*</span></label>
+          <input type="text" id="f_name" name="full_name" class="f-input"
+            placeholder="Priya Sharma" autocomplete="name" maxlength="200">
+          <span class="f-ferr" id="f_nameErr"></span>
+        </div>
+
+        <div class="f-field">
+          <label class="f-label" for="f_email">Email <span class="f-req">*</span></label>
+          <input type="email" id="f_email" name="email" class="f-input"
+            placeholder="priya@example.com" autocomplete="email" maxlength="200">
+          <span class="f-ferr" id="f_emailErr"></span>
+        </div>
+
+        <div class="f-field">
+          <label class="f-label" for="f_phone">WhatsApp Number <span class="f-req">*</span></label>
+          <div class="f-phone-wrap" id="fPhoneWrap">
+            <span class="f-prefix">🇮🇳 +91</span>
+            <input type="tel" id="f_phone" name="phone" class="f-input f-phone-inp"
+              placeholder="9876543210" autocomplete="tel" maxlength="10" inputmode="numeric">
           </div>
-          <span class="l2-error" id="l2_phoneError"></span>
+          <span class="f-ferr" id="f_phoneErr"></span>
         </div>
 
-        <div class="l2-field">
-          <label class="l2-label" for="l2_city">
-            City <span class="l2-req">*</span>
-          </label>
-          <input
-            type="text"
-            id="l2_city"
-            name="city"
-            class="l2-input"
-            placeholder="Enter your city"
-            autocomplete="address-level2"
-            maxlength="200"
-          >
-          <span class="l2-error" id="l2_cityError"></span>
+        <div class="f-field">
+          <label class="f-label" for="f_city">City <span class="f-req">*</span></label>
+          <input type="text" id="f_city" name="city" class="f-input"
+            placeholder="Mumbai" autocomplete="address-level2" maxlength="200">
+          <span class="f-ferr" id="f_cityErr"></span>
         </div>
 
       </div>
 
-      <!-- Course Name -->
-      <div class="l2-row">
-        <div class="l2-field">
-          <label class="l2-label" for="l2_course_name">
-            Course Name <span class="l2-req">*</span>
-          </label>
-          <select
-            id="l2_course_name"
-            name="course_name"
-            class="l2-input l2-select"
-          >
-            <option value="">— Select Course —</option>
-            <option value="Mobile Numerology Golden Package">Mobile Numerology Golden Package</option>
-            <option value="Wealth Mastery Program">Wealth Mastery Program</option>
-            <option value="Mobile Numerology + Software Bundle">Mobile Numerology + Software Bundle</option>
-          </select>
-          <span class="l2-error" id="l2_course_nameError"></span>
-        </div>
-      </div>
+      <button type="button" class="f-btn f-btn--next" id="fNextBtn">
+        Continue
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </button>
+    </div>
 
-      <!-- Date of Birth -->
-      <div class="l2-row">
-        <div class="l2-field">
-          <label class="l2-label" for="l2_dob">
-            Date of Birth <span class="l2-req">*</span>
-          </label>
-          <input
-            type="date"
-            id="l2_dob"
-            name="dob"
-            class="l2-input l2-date"
-            max=""
-          >
-          <span class="l2-error" id="l2_dobError"></span>
-        </div>
-      </div>
+    <!-- STEP 2 -->
+    <div class="f-step f-step--hidden" id="fStep2">
 
-      <!-- Monthly Income Range -->
-      <div class="l2-row">
-        <div class="l2-field">
-          <label class="l2-label" for="l2_income_range">
-            Monthly Income Range <span class="l2-req">*</span>
-          </label>
-          <select
-            id="l2_income_range"
-            name="income_range"
-            class="l2-input l2-select"
-          >
-            <option value="">— Select Range —</option>
-            <option value="Below ₹25,000">Below ₹25,000</option>
-            <option value="₹25,000 – ₹50,000">₹25,000 – ₹50,000</option>
-            <option value="₹50,000 – ₹1,00,000">₹50,000 – ₹1,00,000</option>
-            <option value="₹1,00,000 – ₹2,00,000">₹1,00,000 – ₹2,00,000</option>
-            <option value="Above ₹2,00,000">Above ₹2,00,000</option>
-          </select>
-          <span class="l2-error" id="l2_income_rangeError"></span>
-        </div>
-      </div>
-
-      <!-- Profession and Pain Area -->
-      <div class="l2-row">
-        <div class="l2-field">
-          <label class="l2-label" for="l2_profession_pain">
-            Profession and Pain Area <span class="l2-req">*</span>
-          </label>
-          <input
-            type="text"
-            id="l2_profession_pain"
-            name="profession_pain"
-            class="l2-input"
-            placeholder="EX — Job · Health · Relationship"
-            maxlength="200"
-          >
-          <span class="l2-error" id="l2_profession_painError"></span>
-        </div>
-      </div>
-
-      <!-- Submit -->
-      <button type="submit" class="l2-pay-btn" id="l2SubmitBtn">
-        <span class="l2-btn-text">
-          <svg class="l2-lock-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-          </svg>
-          Pay ₹5,999 Securely
-        </span>
-        <span class="l2-btn-loader"></span>
+      <button type="button" class="f-back" id="fBackBtn">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        Back
       </button>
 
-    </form>
+      <form id="fForm" novalidate>
+        <div class="f-grid">
 
-    <!-- Trust badges -->
-    <div class="l2-trust">
-      <div class="l2-trust-badges">
-        <!-- UPI -->
-        <svg class="l2-badge-svg" viewBox="0 0 60 24" xmlns="http://www.w3.org/2000/svg">
-          <text x="0" y="18" font-family="Arial" font-weight="700" font-size="16" fill="#5F259F">UPI</text>
-        </svg>
-        <!-- Visa -->
-        <svg class="l2-badge-svg" viewBox="0 0 60 24" xmlns="http://www.w3.org/2000/svg">
-          <text x="0" y="18" font-family="Arial" font-weight="700" font-size="15" fill="#1A1F71">VISA</text>
-        </svg>
-        <!-- Mastercard dots -->
-        <svg class="l2-badge-svg" viewBox="0 0 44 28" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="14" cy="14" r="12" fill="#EB001B"/>
-          <circle cx="30" cy="14" r="12" fill="#F79E1B"/>
-          <path d="M22 5.5a12 12 0 0 1 0 17A12 12 0 0 1 22 5.5z" fill="#FF5F00"/>
-        </svg>
-        <!-- RuPay -->
-        <svg class="l2-badge-svg" viewBox="0 0 72 24" xmlns="http://www.w3.org/2000/svg">
-          <text x="0" y="18" font-family="Arial" font-weight="700" font-size="14" fill="#2E8B57">RuPay</text>
-        </svg>
-      </div>
-      <p class="l2-trust-text">100% Secure &amp; Encrypted Payment</p>
+          <div class="f-field">
+            <label class="f-label" for="f_dob">Date of Birth <span class="f-req">*</span></label>
+            <input type="date" id="f_dob" name="dob" class="f-input f-date" max="">
+            <span class="f-ferr" id="f_dobErr"></span>
+          </div>
+
+          <div class="f-field">
+            <label class="f-label" for="f_income">Monthly Income <span class="f-req">*</span></label>
+            <div class="f-sel-wrap">
+              <select id="f_income" name="income_range" class="f-input f-select">
+                <option value="">Select range</option>
+                <option value="0 to 15k">₹0 – ₹15,000</option>
+                <option value="15k to 50k">₹15,000 – ₹50,000</option>
+                <option value="50k to 1 lakh">₹50,000 – ₹1 lakh</option>
+                <option value="1 lakh to 2 lakh">₹1 lakh – ₹2 lakh</option>
+                <option value="2 lakh above">₹2 lakh+</option>
+              </select>
+              <svg class="f-caret" width="11" height="7" viewBox="0 0 11 7" fill="none"><path d="M1 1l4.5 4.5L10 1" stroke="#999" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <span class="f-ferr" id="f_incomeErr"></span>
+          </div>
+
+          <div class="f-field f-field--full">
+            <label class="f-label" for="f_pain">Profession &amp; Main Challenge <span class="f-req">*</span></label>
+            <input type="text" id="f_pain" name="profession_pain" class="f-input"
+              placeholder="e.g. Business owner — inconsistent income" maxlength="200">
+            <span class="f-ferr" id="f_painErr"></span>
+          </div>
+
+        </div>
+
+        <button type="submit" class="f-btn f-btn--pay" id="fPayBtn">
+          <span class="f-btn-inner">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            Claim My Seat — Pay ₹5,999
+          </span>
+          <span class="f-spinner"></span>
+        </button>
+
+        <p class="f-micro">No hidden fees · Secure Razorpay checkout · Instant access</p>
+
+      </form>
     </div>
 
+    <!-- Trust — always visible -->
+    <div class="f-trust">
+      <span class="f-tbadge">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        PCI Secure
+      </span>
+      <span class="f-tsep">·</span>
+      <span class="f-tbadge">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+        Razorpay
+      </span>
+      <span class="f-tsep">·</span>
+      <img src="https://cdn.razorpay.com/static/assets/pay_methods_branding.png"
+           alt="UPI Visa Mastercard RuPay" class="f-pay-logos">
+    </div>
+
+  </div><!-- /f-box--form -->
+
+  <!-- ══════════════════════════════
+       BOX 3 — What's included
+  ══════════════════════════════ -->
+  <div class="f-box f-box--includes">
+    <button type="button" class="f-acc-trigger" id="fAccTrigger" aria-expanded="false">
+      <span>What's included</span>
+      <svg class="f-acc-chevron" id="fAccChevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+    </button>
+    <div class="f-acc-body" id="fAccBody">
+      <ul class="f-inc-list">
+        <li>
+          <span class="f-inc-dot"></span>
+          <div>
+            <strong>Completion Certificate</strong>
+            <span>Issued upon finishing the programme</span>
+          </div>
+        </li>
+        <li>
+          <span class="f-inc-dot"></span>
+          <div>
+            <strong>Personalised 5-Year Numerology Report</strong>
+            <span>Worth ₹5,999 — included free</span>
+          </div>
+        </li>
+        <li>
+          <span class="f-inc-dot"></span>
+          <div>
+            <strong>Premium App Access</strong>
+            <span>Mobile numerology tools, lifetime access</span>
+          </div>
+        </li>
+      </ul>
+    </div>
   </div>
-</div>
+
+</div><!-- /f-page -->
+
 
 <style>
-  /* ── Reset scoped to l2-wrapper ── */
-  .l2-wrapper *, .l2-wrapper *::before, .l2-wrapper *::after {
-    box-sizing: border-box !important;
-    margin: 0 !important;
-    padding: 0 !important;
-  }
+/* ── Reset ── */
+.f-page *, .f-page *::before, .f-page *::after {
+  box-sizing: border-box !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
 
-  /* ── Outer wrapper ── */
-  .l2-wrapper {
-    width: 100% !important;
-    max-width: 620px !important;
-    margin: 0 auto !important;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
-  }
+/* ── Page shell ── */
+.f-page {
+  --brand:      #8B0F2E;
+  --brand-mid:  #C42D55;
+  --amber:      #F5A03A;
+  --amber-dk:   #D97000;
+  --ink:        #18120F;
+  --ink2:       #3D2E28;
+  --ink3:       #9A8A80;
+  --line:       #E8E0D8;
+  --bg:         #F7F4F1;
+  --card:       #FFFDF9;
+  --red-err:    #B91C1C;
+  --green:      #1A6B3C;
+  --green-bg:   #EDFAF4;
 
-  /* ── Card ── */
-  .l2-card {
-    background: #ffffff !important;
-    border-radius: 20px !important;
-    padding: 40px 40px 32px !important;
-    box-shadow: 0 4px 24px rgba(0,0,0,0.08), 0 1px 4px rgba(0,0,0,0.06) !important;
-    border: 1px solid #f0f0f0 !important;
-  }
+  --ff-head: 'Spectral', Georgia, serif;
+  --ff-body: 'Figtree', -apple-system, BlinkMacSystemFont, sans-serif;
 
-  /* ── Header ── */
-  .l2-header {
-    text-align: center !important;
-    margin-bottom: 32px !important;
-    padding-bottom: 28px !important;
-    border-bottom: 1px solid #f0f0f0 !important;
-  }
+  font-family: var(--ff-body) !important;
+  background: var(--bg) !important;
+  max-width: 480px !important;
+  margin: 0 auto !important;
+  padding: 0 0 48px !important;
+}
 
-  .l2-price-badge {
-    display: inline-block !important;
-    background: linear-gradient(135deg, #791F1F 0%, #a02828 100%) !important;
-    color: #ffffff !important;
-    font-size: 22px !important;
-    font-weight: 700 !important;
-    padding: 8px 24px !important;
-    border-radius: 50px !important;
-    margin-bottom: 16px !important;
-    letter-spacing: 0.02em !important;
-    box-shadow: 0 4px 12px rgba(121,31,31,0.25) !important;
-  }
+/* ══════════════════════════════════════
+   ACCENT STRIP
+══════════════════════════════════════ */
+.f-strip {
+  background:
+    radial-gradient(ellipse at 10% 50%, #8B0F2E 0%, transparent 60%),
+    radial-gradient(ellipse at 88% 30%, #C42D55 0%, transparent 50%),
+    radial-gradient(ellipse at 55% 90%, #E8823A 0%, transparent 45%),
+    #8B0F2E !important;
+  padding: 12px 20px 14px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 10px !important;
+}
 
-  .l2-title {
-    font-size: 22px !important;
-    font-weight: 700 !important;
-    color: #1a1a1a !important;
-    line-height: 1.3 !important;
-    margin-bottom: 8px !important;
-    padding: 0 !important;
-    border: none !important;
-    text-align: center !important;
-  }
+.f-proof-row {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 7px !important;
+}
 
-  .l2-subtitle {
-    font-size: 14px !important;
-    color: #666 !important;
-    line-height: 1.5 !important;
-    font-weight: 400 !important;
-    text-align: center !important;
-  }
+.f-proof-dot {
+  width: 7px !important;
+  height: 7px !important;
+  border-radius: 50% !important;
+  background: #4ADE80 !important;
+  flex-shrink: 0 !important;
+  animation: fGreenPulse 1.8s ease-in-out infinite !important;
+}
 
-  /* ── Error banner ── */
-  .l2-error-banner {
-    display: none !important;
-    background: #fef2f2 !important;
-    border: 1px solid #fecaca !important;
-    border-radius: 10px !important;
-    color: #dc2626 !important;
-    font-size: 14px !important;
-    padding: 12px 16px !important;
-    margin-bottom: 24px !important;
-    line-height: 1.5 !important;
-    text-align: center !important;
-  }
+@keyframes fGreenPulse {
+  0%,100% { box-shadow: 0 0 0 0 rgba(74,222,128,0.5); }
+  50%      { box-shadow: 0 0 0 4px rgba(74,222,128,0); }
+}
 
-  .l2-error-banner.l2-show {
-    display: block !important;
-  }
+.f-proof-msg {
+  font-size: 13px !important;
+  color: rgba(255,255,255,0.88) !important;
+  font-family: var(--ff-body) !important;
+  transition: opacity 0.3s !important;
+}
 
-  /* ── Form rows ── */
-  .l2-row {
-    margin-bottom: 20px !important;
-  }
+.f-prog-wrap {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 5px !important;
+}
 
-  .l2-2col {
-    display: grid !important;
-    grid-template-columns: 1fr 1fr !important;
-    gap: 16px !important;
-  }
+.f-prog-track {
+  width: 100% !important;
+  height: 4px !important;
+  background: rgba(255,255,255,0.18) !important;
+  border-radius: 99px !important;
+  overflow: hidden !important;
+}
 
-  /* ── Field ── */
-  .l2-field {
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 6px !important;
-  }
+.f-prog-fill {
+  height: 100% !important;
+  width: 0%;
+  background: linear-gradient(90deg, #F5A03A, rgba(255,255,255,0.7)) !important;
+  border-radius: 99px !important;
+  transition: width 1.8s cubic-bezier(0.22,1,0.36,1) !important;
+}
 
-  .l2-label {
-    font-size: 13px !important;
-    font-weight: 600 !important;
-    color: #333 !important;
-    line-height: 1.4 !important;
-    display: block !important;
-  }
+.f-prog-label {
+  font-size: 11px !important;
+  color: rgba(255,255,255,0.6) !important;
+  font-weight: 500 !important;
+  font-family: var(--ff-body) !important;
+  text-align: right !important;
+  letter-spacing: 0.03em !important;
+}
 
-  .l2-req {
-    color: #791F1F !important;
-  }
+/* ══════════════════════════════════════
+   BOXES — shared base
+══════════════════════════════════════ */
+.f-box {
+  background: var(--card) !important;
+  border: 1px solid var(--line) !important;
+  margin: 12px 16px 0 !important;
+  border-radius: 14px !important;
+}
 
-  /* ── Inputs ── */
-  .l2-input {
-    padding: 12px 14px !important;
-    font-size: 15px !important;
-    color: #333 !important;
-    background: #ffffff !important;
-    border: 2px solid #e0e0e0 !important;
-    border-radius: 10px !important;
-    width: 100% !important;
-    font-family: inherit !important;
-    line-height: 1.5 !important;
-    font-weight: 400 !important;
-    transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.2s ease !important;
-    outline: none !important;
-    height: auto !important;
-    -webkit-appearance: none !important;
-    appearance: none !important;
-  }
+/* ══════════════════════════════════════
+   BOX 1 — Identity (flat, supporting)
+══════════════════════════════════════ */
+.f-box--identity {
+  padding: 20px 22px 18px !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04) !important;
+}
 
-  .l2-input:focus {
-    border-color: #791F1F !important;
-    box-shadow: 0 0 0 4px rgba(121,31,31,0.08) !important;
-    transform: translateY(-1px) !important;
-    outline: none !important;
-  }
+.f-brand {
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  font-size: 10px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase !important;
+  color: var(--brand) !important;
+  margin-bottom: 14px !important;
+  font-family: var(--ff-body) !important;
+}
 
-  .l2-input::placeholder {
-    color: #aaa !important;
-    opacity: 1 !important;
-  }
+.f-identity-body {
+  display: flex !important;
+  align-items: flex-start !important;
+  justify-content: space-between !important;
+  gap: 16px !important;
+  margin-bottom: 14px !important;
+}
 
-  .l2-input.l2-input-error {
-    border-color: #dc2626 !important;
-    animation: l2Shake 0.4s ease !important;
-  }
+.f-title-col {
+  flex: 1 !important;
+}
 
-  /* ── Phone field ── */
-  .l2-phone-wrap {
-    display: flex !important;
-    align-items: stretch !important;
-    border: 2px solid #e0e0e0 !important;
-    border-radius: 10px !important;
-    overflow: hidden !important;
-    transition: border-color 0.25s ease, box-shadow 0.25s ease !important;
-  }
+.f-product {
+  font-family: var(--ff-head) !important;
+  font-size: 16px !important;
+  font-weight: 400 !important;
+  color: var(--ink) !important;
+  line-height: 1.35 !important;
+  margin-bottom: 3px !important;
+}
 
-  .l2-phone-wrap:focus-within {
-    border-color: #791F1F !important;
-    box-shadow: 0 0 0 4px rgba(121,31,31,0.08) !important;
-  }
+.f-subproduct {
+  font-size: 11px !important;
+  color: var(--ink3) !important;
+  font-family: var(--ff-body) !important;
+  line-height: 1.4 !important;
+}
 
-  .l2-phone-wrap.l2-input-error {
-    border-color: #dc2626 !important;
-    animation: l2Shake 0.4s ease !important;
-  }
+.f-price-col {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-end !important;
+  flex-shrink: 0 !important;
+}
 
-  .l2-phone-prefix {
-    display: flex !important;
-    align-items: center !important;
-    padding: 0 12px !important;
-    background: #f7f7f7 !important;
-    border-right: 1px solid #e0e0e0 !important;
-    font-size: 13px !important;
-    font-weight: 600 !important;
-    color: #555 !important;
-    white-space: nowrap !important;
-    flex-shrink: 0 !important;
-  }
+.f-price {
+  font-family: var(--ff-head) !important;
+  font-size: 26px !important;
+  font-weight: 600 !important;
+  color: var(--brand) !important;
+  letter-spacing: -0.02em !important;
+  line-height: 1 !important;
+}
 
-  .l2-phone-input {
-    border: none !important;
-    border-radius: 0 !important;
-    flex: 1 !important;
-    min-width: 0 !important;
-    box-shadow: none !important;
-  }
+.f-price-was {
+  font-size: 12px !important;
+  color: var(--ink3) !important;
+  text-decoration: line-through !important;
+  font-weight: 400 !important;
+  margin-top: 2px !important;
+  font-family: var(--ff-body) !important;
+}
 
-  .l2-phone-input:focus {
-    border-color: transparent !important;
-    box-shadow: none !important;
-    transform: none !important;
-  }
+.f-price-save {
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  color: var(--green) !important;
+  font-family: var(--ff-body) !important;
+  margin-top: 3px !important;
+  letter-spacing: 0.01em !important;
+}
 
-  /* ── Select ── */
-  .l2-select {
-    background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L6 6L11 1' stroke='%23666' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E") !important;
-    background-repeat: no-repeat !important;
-    background-position: right 14px center !important;
-    padding-right: 40px !important;
-    cursor: pointer !important;
-    color: #333 !important;
-  }
+/* Urgency — Box 1 */
+.f-urgency {
+  display: flex !important;
+  align-items: center !important;
+  gap: 7px !important;
+  padding-top: 12px !important;
+  border-top: 1px solid var(--line) !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  color: var(--ink2) !important;
+  font-family: var(--ff-body) !important;
+}
 
-  .l2-select option[value=""] {
-    color: #aaa !important;
-  }
+.f-urgency-dot {
+  width: 6px !important;
+  height: 6px !important;
+  border-radius: 50% !important;
+  background: var(--brand) !important;
+  flex-shrink: 0 !important;
+  animation: fBrandPulse 1.8s ease-in-out infinite !important;
+}
 
-  /* ── Date input ── */
-  .l2-date {
-    cursor: pointer !important;
-    color: #333 !important;
-  }
+@keyframes fBrandPulse {
+  0%,100% { box-shadow: 0 0 0 0 rgba(139,15,46,0.45); }
+  50%      { box-shadow: 0 0 0 5px rgba(139,15,46,0); }
+}
 
-  .l2-date::-webkit-calendar-picker-indicator {
-    opacity: 0.5 !important;
-    cursor: pointer !important;
-  }
+/* ══════════════════════════════════════
+   BOX 2 — Form (primary, elevated)
+══════════════════════════════════════ */
+.f-box--form {
+  padding: 26px 24px 22px !important;
+  border-color: #D8CFC7 !important;
+  background: #FFFDF9 !important;
+  box-shadow:
+    0 4px 6px rgba(0,0,0,0.05),
+    0 12px 40px rgba(0,0,0,0.10) !important;
+  position: relative !important;
+  z-index: 1 !important;
+}
 
-  /* ── Inline error ── */
-  .l2-error {
-    font-size: 12px !important;
-    color: #dc2626 !important;
-    display: none !important;
-    line-height: 1.4 !important;
-    padding-left: 2px !important;
-  }
+/* Stepper */
+.f-stepper {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0 !important;
+  margin-bottom: 22px !important;
+}
 
-  .l2-error.l2-show {
-    display: block !important;
-    animation: l2Shake 0.4s ease !important;
-  }
+.f-step-pill {
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  flex-shrink: 0 !important;
+}
 
-  @keyframes l2Shake {
-    0%, 100% { transform: translateX(0); }
-    25%       { transform: translateX(-6px); }
-    75%       { transform: translateX(6px); }
-  }
+.f-pill-num {
+  width: 20px !important;
+  height: 20px !important;
+  border-radius: 50% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  font-family: var(--ff-body) !important;
+  background: var(--line) !important;
+  color: var(--ink3) !important;
+  transition: background 0.3s, color 0.3s !important;
+}
 
-  /* ── Submit button ── */
-  .l2-pay-btn {
-    width: 100% !important;
-    margin-top: 8px !important;
-    padding: 16px 32px !important;
-    background: #FF8B00 !important;
-    background-image: linear-gradient(135deg, #FF8B00 0%, #ffaa33 100%) !important;
-    color: #ffffff !important;
-    font-size: 17px !important;
-    font-weight: 700 !important;
-    font-family: inherit !important;
-    border: none !important;
-    border-radius: 12px !important;
-    cursor: pointer !important;
-    position: relative !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    gap: 8px !important;
-    min-height: 56px !important;
-    height: auto !important;
-    line-height: 1.4 !important;
-    box-shadow: 0 4px 16px rgba(255,139,0,0.3) !important;
-    transition: transform 0.25s ease, box-shadow 0.25s ease !important;
-    text-decoration: none !important;
-    letter-spacing: 0.01em !important;
-  }
+.f-pill-lbl {
+  font-size: 11px !important;
+  font-weight: 500 !important;
+  color: var(--ink3) !important;
+  font-family: var(--ff-body) !important;
+  transition: color 0.3s !important;
+}
 
-  .l2-pay-btn:hover:not(:disabled) {
-    transform: translateY(-2px) !important;
-    box-shadow: 0 8px 24px rgba(255,139,0,0.35) !important;
-    background: #FF8B00 !important;
-    background-image: linear-gradient(135deg, #FF8B00 0%, #ffaa33 100%) !important;
-    color: #ffffff !important;
-  }
+.f-step-pill--active .f-pill-num {
+  background: var(--brand) !important;
+  color: #fff !important;
+}
 
-  .l2-pay-btn:active:not(:disabled) {
-    transform: translateY(0) !important;
-  }
+.f-step-pill--active .f-pill-lbl {
+  color: var(--ink) !important;
+  font-weight: 600 !important;
+}
 
-  .l2-pay-btn:disabled,
-  .l2-pay-btn.l2-loading {
-    pointer-events: none !important;
-    opacity: 0.85 !important;
-  }
+.f-step-pill--done .f-pill-num {
+  background: var(--brand-mid) !important;
+  color: #fff !important;
+}
 
-  .l2-pay-btn.l2-loading .l2-btn-text {
-    opacity: 0 !important;
-  }
+.f-step-track {
+  flex: 1 !important;
+  height: 2px !important;
+  background: var(--line) !important;
+  margin: 0 10px !important;
+  border-radius: 99px !important;
+  overflow: hidden !important;
+}
 
-  .l2-btn-text {
-    display: flex !important;
-    align-items: center !important;
-    gap: 8px !important;
-    transition: opacity 0.2s ease !important;
-  }
+.f-step-fill {
+  height: 100% !important;
+  width: 0% !important;
+  background: var(--brand-mid) !important;
+  border-radius: 99px !important;
+  transition: width 0.4s cubic-bezier(0.22,1,0.36,1) !important;
+}
 
-  .l2-lock-icon {
-    flex-shrink: 0 !important;
-  }
+/* Error banner */
+.f-err-banner {
+  display: none !important;
+  background: #FEF2F2 !important;
+  border: 1px solid #FECACA !important;
+  border-radius: 8px !important;
+  color: var(--red-err) !important;
+  font-size: 13px !important;
+  padding: 10px 14px !important;
+  margin-bottom: 16px !important;
+  line-height: 1.5 !important;
+  text-align: center !important;
+  font-family: var(--ff-body) !important;
+}
+.f-err-banner.f-show { display: block !important; }
 
-  .l2-btn-loader {
-    display: none !important;
-    position: absolute !important;
-    top: 50% !important;
-    left: 50% !important;
-    transform: translate(-50%, -50%) !important;
-    width: 22px !important;
-    height: 22px !important;
-    border: 3px solid rgba(255,255,255,0.35) !important;
-    border-top-color: #ffffff !important;
-    border-radius: 50% !important;
-    animation: l2Spin 0.7s linear infinite !important;
-  }
+/* Steps */
+.f-step { transition: opacity 0.2s ease !important; }
+.f-step--hidden { display: none !important; }
 
-  .l2-pay-btn.l2-loading .l2-btn-loader {
-    display: block !important;
-  }
+/* Back */
+.f-back {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 5px !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  color: var(--ink3) !important;
+  background: none !important;
+  border: none !important;
+  cursor: pointer !important;
+  padding: 0 !important;
+  margin-bottom: 16px !important;
+  font-family: var(--ff-body) !important;
+  transition: color 0.18s !important;
+}
+.f-back:hover { color: var(--ink) !important; }
 
-  @keyframes l2Spin {
-    to { transform: translate(-50%, -50%) rotate(360deg); }
-  }
+/* Grid */
+.f-grid {
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  gap: 14px !important;
+  margin-bottom: 20px !important;
+}
 
-  /* ── Trust badges ── */
-  .l2-trust {
-    margin-top: 24px !important;
-    padding-top: 20px !important;
-    border-top: 1px solid #f0f0f0 !important;
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    gap: 10px !important;
-  }
+/* Field */
+.f-field {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 6px !important;
+}
 
-  .l2-trust-badges {
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    gap: 20px !important;
-    flex-wrap: wrap !important;
-  }
 
-  .l2-badge-svg {
-    height: 22px !important;
-    width: auto !important;
-    opacity: 0.75 !important;
-    flex-shrink: 0 !important;
-  }
+.f-label {
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  color: var(--ink2) !important;
+  letter-spacing: 0.01em !important;
+  font-family: var(--ff-body) !important;
+}
 
-  .l2-trust-text {
-    font-size: 12px !important;
-    color: #999 !important;
-    text-align: center !important;
-    line-height: 1.4 !important;
-  }
+.f-req { color: var(--brand) !important; }
 
-  /* ── Mobile ── */
-  @media (max-width: 560px) {
-    .l2-card {
-      padding: 28px 20px 24px !important;
-      border-radius: 16px !important;
-    }
+/* Input */
+.f-input {
+  padding: 10px 12px !important;
+  font-size: 14px !important;
+  color: var(--ink) !important;
+  background: #FDFCFB !important;
+  border: 1.5px solid var(--line) !important;
+  border-radius: 9px !important;
+  width: 100% !important;
+  font-family: var(--ff-body) !important;
+  line-height: 1.4 !important;
+  font-weight: 400 !important;
+  outline: none !important;
+  -webkit-appearance: none !important;
+  appearance: none !important;
+  transition: border-color 0.18s, box-shadow 0.18s, background 0.18s !important;
+}
 
-    .l2-2col {
-      grid-template-columns: 1fr !important;
-      gap: 20px !important;
-    }
+.f-input::placeholder { color: #C4BAB2 !important; opacity: 1 !important; }
+.f-input:hover { border-color: #CABFB8 !important; }
+.f-input:focus {
+  border-color: var(--brand-mid) !important;
+  box-shadow: 0 0 0 3px rgba(196,45,85,0.09) !important;
+  background: #fff !important;
+}
+.f-input.f-filled {
+  border-color: #B5D4C0 !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%231A6B3C' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6L9 17l-5-5'/%3E%3C/svg%3E") !important;
+  background-repeat: no-repeat !important;
+  background-position: right 10px center !important;
+  padding-right: 32px !important;
+}
+.f-select.f-filled,
+.f-phone-inp.f-filled {
+  background-image: none !important;
+  padding-right: 10px !important;
+}
+.f-input.f-err-inp {
+  border-color: var(--red-err) !important;
+  box-shadow: 0 0 0 3px rgba(185,28,28,0.08) !important;
+  animation: fShake 0.35s ease !important;
+}
 
-    .l2-title {
-      font-size: 19px !important;
-    }
+@keyframes fShake {
+  0%,100% { transform: translateX(0); }
+  25%      { transform: translateX(-4px); }
+  75%      { transform: translateX(4px); }
+}
 
-    .l2-price-badge {
-      font-size: 20px !important;
-    }
+/* Phone */
+.f-phone-wrap {
+  display: flex !important;
+  align-items: stretch !important;
+  border: 1.5px solid var(--line) !important;
+  border-radius: 9px !important;
+  overflow: hidden !important;
+  background: #FDFCFB !important;
+  transition: border-color 0.18s, box-shadow 0.18s !important;
+}
+.f-phone-wrap:hover { border-color: #CABFB8 !important; }
+.f-phone-wrap:focus-within {
+  border-color: var(--brand-mid) !important;
+  box-shadow: 0 0 0 3px rgba(196,45,85,0.09) !important;
+  background: #fff !important;
+}
+.f-phone-wrap.f-err-inp {
+  border-color: var(--red-err) !important;
+  box-shadow: 0 0 0 3px rgba(185,28,28,0.08) !important;
+  animation: fShake 0.35s ease !important;
+}
 
-    .l2-pay-btn {
-      font-size: 16px !important;
-    }
-  }
+.f-prefix {
+  display: flex !important;
+  align-items: center !important;
+  padding: 0 10px !important;
+  background: #F2EDE8 !important;
+  border-right: 1.5px solid var(--line) !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  color: var(--ink2) !important;
+  white-space: nowrap !important;
+  flex-shrink: 0 !important;
+  font-family: var(--ff-body) !important;
+}
+
+.f-phone-inp {
+  border: none !important;
+  border-radius: 0 !important;
+  flex: 1 !important;
+  min-width: 0 !important;
+  box-shadow: none !important;
+  background: transparent !important;
+}
+.f-phone-inp:focus {
+  border-color: transparent !important;
+  box-shadow: none !important;
+  background: transparent !important;
+}
+
+/* Select */
+.f-sel-wrap { position: relative !important; }
+.f-select { padding-right: 30px !important; cursor: pointer !important; }
+.f-select option[value=""] { color: #C4BAB2 !important; }
+.f-caret {
+  position: absolute !important;
+  right: 10px !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  pointer-events: none !important;
+}
+
+/* Date */
+.f-date { cursor: pointer !important; }
+.f-date::-webkit-calendar-picker-indicator { opacity: 0.4 !important; cursor: pointer !important; }
+
+/* Inline error */
+.f-ferr {
+  font-size: 11px !important;
+  color: var(--red-err) !important;
+  display: none !important;
+  line-height: 1.3 !important;
+  font-family: var(--ff-body) !important;
+}
+.f-ferr.f-show { display: block !important; }
+
+/* Buttons */
+.f-btn {
+  width: 100% !important;
+  border: none !important;
+  border-radius: 10px !important;
+  font-family: var(--ff-body) !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  letter-spacing: 0.01em !important;
+  transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+}
+
+/* Continue — brand red, decisive */
+.f-btn--next {
+  background: var(--brand) !important;
+  color: #fff !important;
+  font-size: 14px !important;
+  padding: 12px 24px !important;
+  box-shadow: 0 3px 12px rgba(139,15,46,0.2) !important;
+}
+.f-btn--next:hover {
+  background: var(--brand-mid) !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 6px 20px rgba(139,15,46,0.26) !important;
+}
+.f-btn--next:active { transform: translateY(0) !important; }
+
+/* Pay — amber, Von Restorff, only warm on page */
+.f-btn--pay {
+  background: linear-gradient(135deg, #F5A03A 0%, #D97000 100%) !important;
+  color: #fff !important;
+  font-size: 15px !important;
+  padding: 15px 24px !important;
+  min-height: 54px !important;
+  position: relative !important;
+  overflow: hidden !important;
+  box-shadow:
+    0 4px 20px rgba(245,160,58,0.28),
+    0 1px 0 rgba(255,255,255,0.15) inset !important;
+}
+.f-btn--pay::before {
+  content: '' !important;
+  position: absolute !important;
+  inset: 0 !important;
+  background: linear-gradient(135deg, rgba(255,255,255,0.13) 0%, transparent 55%) !important;
+  pointer-events: none !important;
+}
+.f-btn--pay:hover:not(:disabled) {
+  transform: translateY(-1px) !important;
+  box-shadow: 0 8px 28px rgba(245,160,58,0.34) !important;
+}
+.f-btn--pay:active:not(:disabled) { transform: translateY(0) !important; }
+.f-btn--pay:disabled,
+.f-btn--pay.f-loading {
+  pointer-events: none !important;
+  opacity: 0.82 !important;
+}
+.f-btn--pay.f-loading .f-btn-inner { opacity: 0 !important; }
+
+.f-btn-inner {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  transition: opacity 0.2s !important;
+}
+
+.f-spinner {
+  display: none !important;
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  width: 20px !important;
+  height: 20px !important;
+  border: 2px solid rgba(255,255,255,0.3) !important;
+  border-top-color: #fff !important;
+  border-radius: 50% !important;
+  animation: fSpin 0.7s linear infinite !important;
+}
+.f-btn--pay.f-loading .f-spinner { display: block !important; }
+
+@keyframes fSpin { to { transform: translate(-50%,-50%) rotate(360deg); } }
+
+.f-micro {
+  text-align: center !important;
+  font-size: 11px !important;
+  color: var(--ink3) !important;
+  margin-top: 12px !important;
+  line-height: 1.5 !important;
+  font-family: var(--ff-body) !important;
+}
+
+/* Trust */
+.f-trust {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 10px !important;
+  margin-top: 18px !important;
+  padding-top: 14px !important;
+  border-top: 1px solid var(--line) !important;
+  flex-wrap: wrap !important;
+}
+
+.f-tbadge {
+  display: flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+  font-size: 11px !important;
+  font-weight: 500 !important;
+  color: var(--ink3) !important;
+  font-family: var(--ff-body) !important;
+}
+
+.f-tsep { color: var(--line) !important; }
+
+.f-pay-logos {
+  height: 18px !important;
+  width: auto !important;
+  opacity: 0.55 !important;
+  display: block !important;
+  filter: grayscale(30%) !important;
+}
+
+/* ══════════════════════════════════════
+   BOX 3 — Includes (flat, supporting)
+══════════════════════════════════════ */
+.f-box--includes {
+  padding: 0 !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04) !important;
+  overflow: hidden !important;
+}
+
+.f-acc-trigger {
+  width: 100% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 16px 22px !important;
+  background: none !important;
+  border: none !important;
+  cursor: pointer !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  color: var(--ink2) !important;
+  font-family: var(--ff-body) !important;
+  letter-spacing: 0.01em !important;
+  transition: background 0.18s !important;
+}
+.f-acc-trigger:hover { background: #FAF7F4 !important; }
+
+.f-acc-chevron {
+  color: var(--ink3) !important;
+  transition: transform 0.32s cubic-bezier(0.22,1,0.36,1) !important;
+  flex-shrink: 0 !important;
+}
+.f-acc-chevron--open { transform: rotate(180deg) !important; }
+
+.f-acc-body {
+  max-height: 0 !important;
+  overflow: hidden !important;
+  transition: max-height 0.38s cubic-bezier(0.22,1,0.36,1) !important;
+}
+.f-acc-body--open { max-height: 260px !important; }
+
+.f-inc-list {
+  list-style: none !important;
+  padding: 0 22px 18px !important;
+  border-top: 1px solid var(--line) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 13px !important;
+  padding-top: 14px !important;
+}
+
+.f-inc-list li {
+  display: flex !important;
+  align-items: flex-start !important;
+  gap: 10px !important;
+}
+
+.f-inc-dot {
+  width: 5px !important;
+  height: 5px !important;
+  border-radius: 50% !important;
+  background: var(--amber) !important;
+  flex-shrink: 0 !important;
+  margin-top: 5px !important;
+}
+
+.f-inc-list li strong {
+  display: block !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  color: var(--ink) !important;
+  font-family: var(--ff-body) !important;
+  line-height: 1.3 !important;
+}
+
+.f-inc-list li span {
+  font-size: 12px !important;
+  color: var(--ink3) !important;
+  font-family: var(--ff-body) !important;
+  line-height: 1.4 !important;
+}
+
+/* ── Mobile ── */
+@media (max-width: 480px) {
+  .f-page { padding: 0 0 48px !important; }
+  .f-box  { margin: 8px 12px 0 !important; }
+  .f-price { font-size: 22px !important; }
+  .f-btn--pay { font-size: 14px !important; }
+  .f-identity-body { flex-direction: column !important; gap: 10px !important; }
+  .f-price-col { flex-direction: row !important; align-items: baseline !important; gap: 8px !important; }
+}
 </style>
+
 
 <script>
 (function () {
   'use strict';
 
-  var API_BASE = 'https://batra-razorpay.vercel.app';
-  var PRODUCT_ID = 'PRODUCT_ID_HERE'; // ← replace after adding to catalog.js
+  var API_BASE   = 'https://batra-razorpay.vercel.app';
+  var PRODUCT_ID = 'mnw-golden-l2';
 
-  var form        = document.getElementById('l2Form');
-  var submitBtn   = document.getElementById('l2SubmitBtn');
-  var errorBanner = document.getElementById('l2ErrorBanner');
+  var step1     = document.getElementById('fStep1');
+  var step2     = document.getElementById('fStep2');
+  var pill1     = document.getElementById('fPill1');
+  var pill2     = document.getElementById('fPill2');
+  var stepFill  = document.getElementById('fStepFill');
+  var nextBtn   = document.getElementById('fNextBtn');
+  var backBtn   = document.getElementById('fBackBtn');
+  var payBtn    = document.getElementById('fPayBtn');
+  var form      = document.getElementById('fForm');
+  var errBanner = document.getElementById('fErrBanner');
 
-  // ── Set max DOB to today ──────────────────────────────────────────
-  var dobInput = document.getElementById('l2_dob');
-  if (dobInput) {
-    dobInput.setAttribute('max', new Date().toISOString().split('T')[0]);
-  }
+  /* ── DOB max ── */
+  var dobEl = document.getElementById('f_dob');
+  if (dobEl) dobEl.setAttribute('max', new Date().toISOString().split('T')[0]);
 
-  // ── Phone: digits only ───────────────────────────────────────────
-  document.getElementById('l2_phone').addEventListener('input', function (e) {
-    e.target.value = e.target.value.replace(/\D/g, '').slice(0, 10);
-  });
+  /* ── Field map ── */
+  var errMap = {
+    f_name:   'f_nameErr',
+    f_email:  'f_emailErr',
+    f_phone:  'f_phoneErr',
+    f_city:   'f_cityErr',
+    f_dob:    'f_dobErr',
+    f_income: 'f_incomeErr',
+    f_pain:   'f_painErr'
+  };
 
-  // ── Clear error on input/change ──────────────────────────────────
-  ['l2_full_name', 'l2_email', 'l2_phone', 'l2_city',
-   'l2_course_name', 'l2_dob', 'l2_income_range', 'l2_profession_pain'
-  ].forEach(function (id) {
+  Object.keys(errMap).forEach(function (id) {
     var el = document.getElementById(id);
     if (!el) return;
     el.addEventListener(el.tagName === 'SELECT' ? 'change' : 'input', function () {
-      clearFieldError(id.replace('l2_', ''));
+      el.classList.toggle('f-filled', !!el.value.trim());
+      clearFerr(id);
     });
   });
 
-  // ── Validation helpers ───────────────────────────────────────────
-  function validateEmail(val) {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(val);
-  }
+  /* ── Phone digits only ── */
+  document.getElementById('f_phone').addEventListener('input', function (e) {
+    e.target.value = e.target.value.replace(/\D/g, '').slice(0, 10);
+  });
 
-  function validateIndianPhone(val) {
-    return /^[6-9]\d{9}$/.test(val);
-  }
-
-  function showFieldError(fieldName, msg) {
-    var inputId = 'l2_' + fieldName;
-    var errorId = inputId + 'Error';
-    var input   = document.getElementById(inputId);
-    var errEl   = document.getElementById(errorId);
-
-    if (input) {
-      if (input.closest && input.closest('.l2-phone-wrap')) {
-        input.closest('.l2-phone-wrap').classList.add('l2-input-error');
-      } else {
-        input.classList.add('l2-input-error');
-      }
+  /* ── Error helpers ── */
+  function showFerr(id, msg) {
+    var el  = document.getElementById(id);
+    var err = document.getElementById(errMap[id]);
+    if (el) {
+      var wrap = el.closest && el.closest('.f-phone-wrap');
+      (wrap || el).classList.add('f-err-inp');
     }
+    if (err) { err.textContent = msg; err.classList.add('f-show'); }
+  }
 
-    if (errEl) {
-      errEl.textContent = msg;
-      errEl.classList.add('l2-show');
+  function clearFerr(id) {
+    var el  = document.getElementById(id);
+    var err = document.getElementById(errMap[id]);
+    if (el) {
+      var wrap = el.closest && el.closest('.f-phone-wrap');
+      (wrap || el).classList.remove('f-err-inp');
     }
+    if (err) { err.textContent = ''; err.classList.remove('f-show'); }
   }
 
-  function clearFieldError(fieldName) {
-    var inputId = 'l2_' + fieldName;
-    var errorId = inputId + 'Error';
-    var input   = document.getElementById(inputId);
-    var errEl   = document.getElementById(errorId);
+  function showBanner(msg) {
+    errBanner.textContent = msg;
+    errBanner.classList.add('f-show');
+    errBanner.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
 
-    if (input) {
-      if (input.closest && input.closest('.l2-phone-wrap')) {
-        input.closest('.l2-phone-wrap').classList.remove('l2-input-error');
-      } else {
-        input.classList.remove('l2-input-error');
-      }
+  function hideBanner() {
+    errBanner.textContent = '';
+    errBanner.classList.remove('f-show');
+  }
+
+  /* ── Step 1 validate ── */
+  function validateStep1() {
+    var ok    = true;
+    var name  = document.getElementById('f_name').value.trim();
+    var email = document.getElementById('f_email').value.trim();
+    var phone = document.getElementById('f_phone').value.trim();
+    var city  = document.getElementById('f_city').value.trim();
+
+    if (!name)  { showFerr('f_name',  'Please enter your full name'); ok = false; }
+    if (!email) { showFerr('f_email', 'Email is required'); ok = false; }
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) {
+      showFerr('f_email', 'Enter a valid email address'); ok = false;
     }
-    if (errEl) {
-      errEl.textContent = '';
-      errEl.classList.remove('l2-show');
+    if (!phone) { showFerr('f_phone', 'WhatsApp number is required'); ok = false; }
+    else if (!/^[6-9]\d{9}$/.test(phone)) {
+      showFerr('f_phone', 'Enter a valid 10-digit Indian number'); ok = false;
     }
+    if (!city) { showFerr('f_city', 'City is required'); ok = false; }
+    return ok;
   }
 
-  function clearAllErrors() {
-    ['full_name', 'email', 'phone', 'city',
-     'course_name', 'dob', 'income_range', 'profession_pain'
-    ].forEach(clearFieldError);
-    hideBannerError();
+  /* ── Slide transition ── */
+  function slideOut(el, dir, cb) {
+    el.style.transition = 'opacity 0.2s ease, transform 0.2s ease';
+    el.style.opacity = '0';
+    el.style.transform = 'translateX(' + (dir === 'left' ? '-14px' : '14px') + ')';
+    setTimeout(function () {
+      el.classList.add('f-step--hidden');
+      el.style.cssText = '';
+      cb();
+    }, 200);
   }
 
-  function showBannerError(msg) {
-    errorBanner.textContent = msg;
-    errorBanner.classList.add('l2-show');
-    errorBanner.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  }
-
-  function hideBannerError() {
-    errorBanner.textContent = '';
-    errorBanner.classList.remove('l2-show');
-  }
-
-  // ── Set loading state ────────────────────────────────────────────
-  function setLoading(on) {
-    if (on) {
-      submitBtn.classList.add('l2-loading');
-      submitBtn.setAttribute('disabled', 'disabled');
-    } else {
-      submitBtn.classList.remove('l2-loading');
-      submitBtn.removeAttribute('disabled');
-    }
-  }
-
-  // ── Capture UTM params ───────────────────────────────────────────
-  function getUtmParams() {
-    try {
-      var params = new URLSearchParams(window.location.search);
-      var utmKeys = ['utm_source','utm_medium','utm_campaign','utm_content','utm_term'];
-      var parts = [];
-      utmKeys.forEach(function (k) {
-        if (params.get(k)) parts.push(k + '=' + encodeURIComponent(params.get(k)));
+  function slideIn(el, from) {
+    el.classList.remove('f-step--hidden');
+    el.style.opacity = '0';
+    el.style.transform = 'translateX(' + (from === 'right' ? '14px' : '-14px') + ')';
+    requestAnimationFrame(function () {
+      requestAnimationFrame(function () {
+        el.style.transition = 'opacity 0.22s ease, transform 0.22s ease';
+        el.style.opacity = '1';
+        el.style.transform = 'translateX(0)';
       });
-      return parts.join('&').slice(0, 256);
-    } catch (e) {
-      return '';
-    }
+    });
   }
 
-  // ── Load Razorpay script ─────────────────────────────────────────
-  function loadRazorpay() {
-    return new Promise(function (resolve, reject) {
-      if (window.Razorpay) { resolve(); return; }
+  /* ── Next ── */
+  nextBtn.addEventListener('click', function () {
+    hideBanner();
+    ['f_name','f_email','f_phone','f_city'].forEach(clearFerr);
+    if (!validateStep1()) {
+      var first = step1.querySelector('.f-err-inp');
+      if (first) first.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+    slideOut(step1, 'left', function () { slideIn(step2, 'right'); });
+    pill1.classList.remove('f-step-pill--active');
+    pill1.classList.add('f-step-pill--done');
+    pill2.classList.add('f-step-pill--active');
+    stepFill.style.width = '100%';
+  });
+
+  /* ── Back ── */
+  backBtn.addEventListener('click', function () {
+    slideOut(step2, 'right', function () { slideIn(step1, 'left'); });
+    pill2.classList.remove('f-step-pill--active');
+    pill1.classList.remove('f-step-pill--done');
+    pill1.classList.add('f-step-pill--active');
+    stepFill.style.width = '0%';
+  });
+
+  /* ── Progress bar + urgency sync ── */
+  var totalSeats   = 20;
+  var takenSeats   = 16;
+  var urgencySeats = 4;
+  var progFill     = document.getElementById('fProgFill');
+  var progLabel    = document.getElementById('fProgLabel');
+  var urgencyEl    = document.getElementById('fUrgencyText');
+
+  function renderCounts() {
+    var pct = Math.round((takenSeats / totalSeats) * 100);
+    progFill.style.width = pct + '%';
+    progLabel.textContent = takenSeats + ' of ' + totalSeats + ' spots taken';
+    urgencyEl.textContent = urgencySeats + ' spot' + (urgencySeats === 1 ? '' : 's') + ' remaining in this cohort';
+  }
+
+  setTimeout(function () { renderCounts(); }, 400);
+
+  setInterval(function () {
+    if (takenSeats >= totalSeats - 1) return;
+    takenSeats++;
+    urgencySeats = Math.max(1, urgencySeats - 1);
+    renderCounts();
+  }, 42000);
+
+  /* ── Social proof ── */
+  var proofItems = [
+    'Swati from Delhi joined 2 minutes ago',
+    'Priya from Mumbai joined just now',
+    'Anjali from Bengaluru joined 5 minutes ago',
+    'Meera from Hyderabad joined 1 minute ago',
+    'Kavita from Pune joined 4 minutes ago',
+    'Deepa from Jaipur joined 7 minutes ago',
+  ];
+  var proofIdx = 0;
+  var proofEl  = document.getElementById('fProofMsg');
+
+  setInterval(function () {
+    proofIdx = (proofIdx + 1) % proofItems.length;
+    proofEl.style.opacity = '0';
+    setTimeout(function () {
+      proofEl.textContent = proofItems[proofIdx];
+      proofEl.style.opacity = '1';
+    }, 300);
+  }, 7000);
+
+  /* ── Accordion ── */
+  var accTrigger = document.getElementById('fAccTrigger');
+  var accBody    = document.getElementById('fAccBody');
+  var accChevron = document.getElementById('fAccChevron');
+  var accOpen    = false;
+
+  accTrigger.addEventListener('click', function () {
+    accOpen = !accOpen;
+    accTrigger.setAttribute('aria-expanded', String(accOpen));
+    accBody.classList.toggle('f-acc-body--open', accOpen);
+    accChevron.classList.toggle('f-acc-chevron--open', accOpen);
+  });
+
+  /* ── UTM ── */
+  function getUtm() {
+    try {
+      var p = new URLSearchParams(window.location.search);
+      return ['utm_source','utm_medium','utm_campaign','utm_content','utm_term']
+        .filter(function (k) { return p.get(k); })
+        .map(function (k) { return k + '=' + encodeURIComponent(p.get(k)); })
+        .join('&').slice(0, 256);
+    } catch (e) { return ''; }
+  }
+
+  /* ── Razorpay loader ── */
+  function loadRzp() {
+    return new Promise(function (res, rej) {
+      if (window.Razorpay) { res(); return; }
       var s = document.createElement('script');
       s.src = 'https://checkout.razorpay.com/v1/checkout.js';
-      s.onload = resolve;
-      s.onerror = function () { reject(new Error('Could not load payment gateway. Please refresh and try again.')); };
+      s.onload = res;
+      s.onerror = function () { rej(new Error('Payment gateway unavailable. Please refresh and try again.')); };
       document.head.appendChild(s);
     });
   }
 
-  // ── Form submit ──────────────────────────────────────────────────
+  function setLoading(on) {
+    payBtn.classList.toggle('f-loading', on);
+    payBtn.disabled = on;
+  }
+
+  /* ── Submit ── */
   form.addEventListener('submit', function (e) {
     e.preventDefault();
-    clearAllErrors();
+    hideBanner();
+    ['f_dob','f_income','f_pain'].forEach(clearFerr);
 
-    // Collect values
-    var full_name       = document.getElementById('l2_full_name').value.trim();
-    var email           = document.getElementById('l2_email').value.trim();
-    var phone           = document.getElementById('l2_phone').value.trim();
-    var city            = document.getElementById('l2_city').value.trim();
-    var course_name     = document.getElementById('l2_course_name').value;
-    var dob             = document.getElementById('l2_dob').value;
-    var income_range    = document.getElementById('l2_income_range').value;
-    var profession_pain = document.getElementById('l2_profession_pain').value.trim();
+    var dob    = document.getElementById('f_dob').value;
+    var income = document.getElementById('f_income').value;
+    var pain   = document.getElementById('f_pain').value.trim();
 
-    // Validate
-    var valid = true;
+    var ok = true;
+    if (!dob)    { showFerr('f_dob',    'Date of birth is required'); ok = false; }
+    if (!income) { showFerr('f_income', 'Please select your income range'); ok = false; }
+    if (!pain)   { showFerr('f_pain',   'Please share your profession and challenge'); ok = false; }
 
-    if (!full_name) {
-      showFieldError('full_name', 'Full name is required');
-      valid = false;
-    }
-
-    if (!email) {
-      showFieldError('email', 'Email is required');
-      valid = false;
-    } else if (!validateEmail(email)) {
-      showFieldError('email', 'Please enter a valid email address');
-      valid = false;
-    }
-
-    if (!phone) {
-      showFieldError('phone', 'WhatsApp number is required');
-      valid = false;
-    } else if (!validateIndianPhone(phone)) {
-      showFieldError('phone', 'Enter a valid 10-digit Indian mobile number');
-      valid = false;
-    }
-
-    if (!city) {
-      showFieldError('city', 'City is required');
-      valid = false;
-    }
-
-    if (!course_name) {
-      showFieldError('course_name', 'Please select a course');
-      valid = false;
-    }
-
-    if (!dob) {
-      showFieldError('dob', 'Date of birth is required');
-      valid = false;
-    }
-
-    if (!income_range) {
-      showFieldError('income_range', 'Please select your monthly income range');
-      valid = false;
-    }
-
-    if (!profession_pain) {
-      showFieldError('profession_pain', 'Please enter your profession and pain area');
-      valid = false;
-    }
-
-    if (!valid) {
-      // Scroll to first error
-      var firstError = form.querySelector('.l2-input-error, .l2-phone-wrap.l2-input-error');
-      if (firstError) firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    if (!ok) {
+      var first = step2.querySelector('.f-err-inp');
+      if (first) first.scrollIntoView({ behavior: 'smooth', block: 'center' });
       return;
     }
 
-    // All valid — proceed to payment
     setLoading(true);
-    hideBannerError();
-
-    var customer = {
-      full_name:       full_name,
-      email:           email,
-      phone:           phone,
-      city:            city,
-      course_name:     course_name,
-      dob:             dob,
-      income_range:    income_range,
-      profession_pain: profession_pain
-    };
 
     var payload = {
-      product_id:  PRODUCT_ID,
-      customer:    customer,
-      utm_params:  getUtmParams()
+      product_id: PRODUCT_ID,
+      customer: {
+        full_name:       document.getElementById('f_name').value.trim(),
+        email:           document.getElementById('f_email').value.trim(),
+        phone:           document.getElementById('f_phone').value.trim(),
+        city:            document.getElementById('f_city').value.trim(),
+        dob:             dob,
+        income_range:    income,
+        profession_pain: pain
+      },
+      utm_params: getUtm()
     };
 
-    // Step 1: create order
     fetch(API_BASE + '/api/create-order', {
       method:  'POST',
       headers: { 'Content-Type': 'application/json' },
       body:    JSON.stringify(payload)
     })
-    .then(function (res) {
-      if (!res.ok) return res.json().then(function (d) { throw new Error(d.error || 'Order creation failed'); });
-      return res.json();
+    .then(function (r) {
+      if (!r.ok) return r.json().then(function (d) { throw new Error(d.error || 'Order creation failed'); });
+      return r.json();
     })
+    .then(function (data) { return loadRzp().then(function () { return data; }); })
     .then(function (data) {
-      // Step 2: load Razorpay and open popup
-      return loadRazorpay().then(function () { return data; });
-    })
-    .then(function (data) {
-      var options = {
+      var rzp = new window.Razorpay({
         key:         data.key_id,
         amount:      data.amount,
         currency:    data.currency,
         name:        'The Batraa Numerology',
         description: data.description || data.product_name,
         order_id:    data.order_id,
-        prefill: {
-          name:    data.customer.name,
-          email:   data.customer.email,
-          contact: data.customer.contact
-        },
-        theme: { color: '#791F1F' },
-        modal: {
-          ondismiss: function () {
-            setLoading(false);
-          }
-        },
+        prefill: { name: data.customer.name, email: data.customer.email, contact: data.customer.contact },
+        theme:   { color: '#8B0F2E' },
+        modal:   { ondismiss: function () { setLoading(false); } },
         handler: function (response) {
-          // Step 3: verify payment
           fetch(API_BASE + '/api/verify-payment', {
             method:  'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -872,35 +1255,23 @@
               razorpay_signature:  response.razorpay_signature
             })
           })
-          .then(function (res) {
-            if (!res.ok) return res.json().then(function (d) { throw new Error(d.error || 'Verification failed'); });
-            return res.json();
+          .then(function (r) {
+            if (!r.ok) return r.json().then(function (d) { throw new Error(d.error || 'Verification failed'); });
+            return r.json();
           })
-          .then(function (verifyData) {
-            if (verifyData.redirect_url) {
-              window.location.href = verifyData.redirect_url;
-            } else {
-              throw new Error('Payment verified but redirect URL missing. Please contact support.');
-            }
+          .then(function (v) {
+            if (v.redirect_url) { window.location.href = v.redirect_url; }
+            else { throw new Error('Payment verified but redirect missing. Please contact support.'); }
           })
-          .catch(function (err) {
-            setLoading(false);
-            showBannerError(err.message || 'Payment verification failed. Please contact support.');
-          });
+          .catch(function (err) { setLoading(false); showBanner(err.message || 'Verification failed. Please contact support.'); });
         }
-      };
-
-      var rzp = new window.Razorpay(options);
-
-      rzp.on('payment.failed', function () {
-        setLoading(false);
       });
-
+      rzp.on('payment.failed', function () { setLoading(false); });
       rzp.open();
     })
     .catch(function (err) {
       setLoading(false);
-      showBannerError(err.message || 'Something went wrong. Please try again.');
+      showBanner(err.message || 'Something went wrong. Please try again.');
     });
   });
 
