@@ -75,6 +75,13 @@ module.exports = async function handler(req, res) {
       const notes = { ...(payment?.notes || {}), ...(order?.notes || {}) };
       console.log('[webhook] notes debug:', JSON.stringify({ payment_notes: payment?.notes, order_notes: order?.notes }));
 
+      // Skip entirely if not a catalog product — prevents noise from old payment links
+      const product = getProduct(notes.product_id);
+      if (!product) {
+        console.log(`[webhook] Ignoring non-catalog payment: product_id=${notes.product_id || 'none'} | orderId=${payment?.order_id || order?.id || 'unknown'}`);
+        return res.status(200).json({ status: 'ok' });
+      }
+
       // Build Pabbly payload with all customer + payment data
       const payload = {
         event: event.event,
@@ -118,18 +125,14 @@ module.exports = async function handler(req, res) {
         }
       }
 
-      // pabbly_webhook looked up from catalog (not stored in notes anymore)
-      const product = getProduct(notes.product_id);
-      const pabblyUrl = product?.pabbly_webhook || "";
+      // pabbly_webhook from catalog (product already verified above)
+      const pabblyUrl = product.pabbly_webhook || "";
 
       if (pabblyUrl && pabblyUrl.startsWith("https://connect.pabbly.com/")) {
         console.log(`[webhook] Firing Pabbly for product: ${notes.product_id}`);
         await firePabbly(pabblyUrl, payload);
       } else {
-        console.warn(
-          "[webhook] No valid pabbly_webhook in order notes for:",
-          notes.product_id,
-        );
+        console.warn("[webhook] No pabbly_webhook configured for:", notes.product_id);
       }
 
       // Firestore — only for orders that came through our create-order system
