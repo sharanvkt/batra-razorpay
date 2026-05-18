@@ -10,7 +10,8 @@
       "source": "/base.js",
       "headers": [
         { "key": "Access-Control-Allow-Origin", "value": "*" },
-        { "key": "Content-Type", "value": "application/javascript" }
+        { "key": "Content-Type", "value": "application/javascript" },
+        { "key": "Cache-Control", "value": "no-cache" }
       ]
     },
     {
