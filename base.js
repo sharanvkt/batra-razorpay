@@ -316,7 +316,7 @@
     if (!window.location.search) return null;
     var src = new URLSearchParams(window.location.search);
     var out = new URLSearchParams();
-    ["utm_source", "utm_medium", "utm_id", "Ad_id"].forEach(function (k) {
+    ["utm_source", "utm_medium", "utm_id", "fbc_id", "h_ad_id"].forEach(function (k) {
       var v = src.get(k);
       if (v) out.set(k, v);
     });
