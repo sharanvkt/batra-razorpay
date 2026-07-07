@@ -48,10 +48,6 @@
     hookFormCtaButtons();
     hookModalForm();
     recoverCrashedPayment();
-
-    // PageView — fires once on load (no dedup needed)
-    var pvId = "pv-" + Date.now() + "-" + Math.random().toString(36).slice(2, 6);
-    trackEvent("PageView", pvId, {});
   }
 
   if (document.readyState === "loading") {
@@ -81,10 +77,6 @@
         console.error("[rzp] .form-cta button is missing data-product-id");
         return;
       }
-
-      // InitiateCheckout — CTA clicked (no dedup needed)
-      var icId = "ic-" + activeProductId + "-" + Date.now();
-      trackEvent("InitiateCheckout", icId, { content_ids: [activeProductId] }, { product_id: activeProductId });
 
       // Open the modal (your existing modal logic)
       var modal = document.getElementById("leadFormModal");
@@ -165,15 +157,6 @@
       body:    JSON.stringify({ product_id: productId, customer: customer, utm_params: utmParams || undefined }),
     })
       .then(function (orderData) {
-        // AddToCart — order created, order_id available for dedup
-        var atcId = "atc-" + orderData.order_id;
-        trackEvent(
-          "AddToCart",
-          atcId,
-          { value: orderData.amount / 100, currency: "INR", content_ids: [productId] },
-          { product_id: productId, amount_paise: orderData.amount, customer: customer }
-        );
-
         return loadRazorpayScript().then(function () {
           openCheckout(orderData, redirectUrl, triggerEl);
         });
@@ -217,8 +200,6 @@
       theme: { color: "#2371ec" },
 
       handler: function (paymentResponse) {
-        // Browser Purchase fires on the TY page (manual fbq code there).
-        // CAPI Purchase fires from webhook.js (server-authoritative).
         verifyAndRedirect(paymentResponse, redirectUrl, triggerEl);
       },
 
@@ -309,7 +290,7 @@
   }
 
   // -------------------------------------------------------
-  // META CAPI HELPERS
+  // UTM CAPTURE (forwarded to Pabbly via create-order → webhook)
   // -------------------------------------------------------
 
   function captureUtmParams() {
@@ -321,34 +302,6 @@
       if (v) out.set(k, v);
     });
     return out.toString() || null;
-  }
-
-  function getCookie(name) {
-    var match = document.cookie.match(new RegExp("(^| )" + name + "=([^;]+)"));
-    return match ? match[2] : null;
-  }
-
-  // Fire browser fbq event AND CAPI proxy in parallel (fire-and-forget)
-  function trackEvent(eventName, eventId, fbqData, capiExtra) {
-    if (document.querySelector('meta[name="no-meta-pixel"]')) return;
-    if (typeof fbq !== "undefined") {
-      fbq("track", eventName, fbqData || {}, { eventID: eventId });
-    }
-    var payload = Object.assign(
-      {
-        event_name:       eventName,
-        event_id:         eventId,
-        event_source_url: window.location.href,
-        fbp:              getCookie("_fbp"),
-        fbc:              getCookie("_fbc"),
-      },
-      capiExtra || {}
-    );
-    fetch(VERCEL_BASE_URL + "/api/meta-events", {
-      method:  "POST",
-      headers: { "Content-Type": "application/json" },
-      body:    JSON.stringify(payload),
-    }).catch(function () {});
   }
 
   // -------------------------------------------------------

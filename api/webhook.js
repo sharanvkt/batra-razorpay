@@ -9,7 +9,6 @@
  */
 
 const crypto = require("crypto");
-const { sendCapiEvent } = require("../lib/meta-capi");
 const { getProduct } = require("../lib/catalog");
 const { db } = require("../lib/firebase");
 
@@ -143,30 +142,6 @@ module.exports = async function handler(req, res) {
           .catch((err) => console.error("[webhook] Firestore write failed:", err.message));
       }
 
-      // Meta CAPI Purchase — server-authoritative, deduplicated via purch-{order_id}
-      const nameParts = (notes.customer_name || notes.full_name || "").trim().split(" ");
-      await sendCapiEvent({
-        event_name: "Purchase",
-        event_id: "purch-" + payload.order_id,
-        event_source_url: "https://thebatraanumerology.org/",
-        user_data: {
-          email:      notes.customer_email || notes.email || undefined,
-          phone:      notes.customer_phone || notes.phone || undefined,
-          first_name: nameParts[0]          || undefined,
-          last_name:  nameParts.slice(1).join(" ") || undefined,
-          dob:        notes.customer_dob    || undefined,
-          gender:     notes.customer_gender || undefined,
-        },
-        custom_data: {
-          value:        parseFloat(payload.amount_inr),
-          currency:     "INR",
-          content_ids:  [notes.product_id],
-          content_type: "product",
-        },
-        test_event_code: process.env.META_TEST_EVENT_CODE,
-      }).catch((err) => {
-        console.error("[webhook] Meta CAPI Purchase failed:", err.message);
-      });
     }
 
     if (event.event === "payment.failed") {

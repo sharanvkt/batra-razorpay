@@ -3,7 +3,7 @@
  *
  * Verifies HMAC-SHA256 signature after Razorpay popup closes.
  * On success, builds a thank-you redirect URL with all payment
- * and customer data as query params (for Meta Pixel etc).
+ * and customer data as query params (for GTM etc. on the TY page).
  *
  * SECURITY:
  * - Signature verified with timingSafeEqual
@@ -65,7 +65,7 @@ module.exports = async function handler(req, res) {
   const notes = order.notes || {};
 
   // Build thank-you URL with all data as params
-  // These are available on the TY page for Meta Pixel, GTM etc.
+  // These are available on the TY page for GTM etc.
   const origin = req.headers.origin || "https://thebatraanumerology.org";
   const product = getProduct(notes.product_id);
   const thankyouPath = (product?.thankyou_path || "/thank-you/").replace(/\/?$/, "/");
